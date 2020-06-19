@@ -4,9 +4,10 @@ using System.IO;
 using System.Text;
 
 namespace Project0.Business.Behavior {
-    interface ISerialized {
+    public interface ISerialized {
 
-        void Serialize (string file);
-        void Deserialize (string file);
+        int ID {
+            get;
+        }
     }
 }

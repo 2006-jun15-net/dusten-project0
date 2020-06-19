@@ -14,7 +14,23 @@ namespace Project0.Business {
         readonly string mFirstname;
         readonly string mLastname;
 
-        // TODO default store loc
+        readonly int mID;
+
+        int mStoreID;
+
+        /// <summary>
+        /// The customer's first name
+        /// </summary>
+        public string Firstname {
+            get => mFirstname;
+        }
+
+        /// <summary>
+        /// The customer's last name
+        /// </summary>
+        public string Lastname {
+            get => mLastname;
+        }
 
         /// <summary>
         /// The customer's full name
@@ -23,18 +39,28 @@ namespace Project0.Business {
             get => mFirstname + " " + mLastname;
         }
 
-        public Customer (string firstname, string lastname) {
+        /// <summary>
+        /// The customer's unique ID
+        /// </summary>
+        public int ID {
+            get => mID;
+        }
+
+        /// <summary>
+        /// Store ID that the customer is currently ordering from
+        /// </summary>
+        public int StoreID {
+
+            get => mStoreID;
+            set => mStoreID = value;
+        }
+
+        public Customer (string firstname, string lastname, int id) {
 
             mFirstname = firstname;
             mLastname = lastname;
-        }
 
-        public void Serialize (string file) {
-            throw new NotImplementedException ();
-        }
-
-        public void Deserialize (string file) {
-            throw new NotImplementedException ();
+            mID = id;
         }
     }
 }

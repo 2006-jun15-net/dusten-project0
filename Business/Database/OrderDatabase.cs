@@ -4,10 +4,12 @@ using System.Text;
 
 namespace Project0.Business.Database {
 
-    class OrderDatabase {
+    class OrderDatabase : MockDatabase<Order> {
 
         // TODO get order by time
         // TODO get order(s) by customer
         // TODO get order(s) by store
+
+
     }
 }

@@ -2,7 +2,7 @@
 
 namespace Project0.Business {
 
-    class Order {
+    public class Order {
 
     }
 }

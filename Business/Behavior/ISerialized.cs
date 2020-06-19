@@ -6,7 +6,7 @@ using System.Text;
 namespace Project0.Business.Behavior {
     interface ISerialized {
 
-        void Serialize (File file);
-        void Deserialize (File file);
+        void Serialize (string file);
+        void Deserialize (string file);
     }
 }

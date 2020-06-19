@@ -4,7 +4,7 @@ using System.Text;
 
 namespace Project0.Main {
 
-    class InputHandler {
+    class IOHandler {
 
     }
 }

@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 namespace Project0.Business.Database {
 
@@ -12,15 +13,16 @@ namespace Project0.Business.Database {
         /// </summary>
         /// <param name="customer"></param>
         /// <param name="store"></param>
-        void AddOrder (Customer customer, Store store) {
+        public void AddOrder (Customer customer, Store store, List<Product> products) {
 
             mUuid += 1;
 
             var order = new Order () {
 
                 CustomerID = customer.ID,
-                StoreID = store.ID
-                ID = mUuid;
+                StoreID = store.ID,
+                Products = products,
+                ID = mUuid
             };
 
             mItems.Add (order);

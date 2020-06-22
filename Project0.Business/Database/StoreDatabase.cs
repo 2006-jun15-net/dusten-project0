@@ -7,7 +7,7 @@ namespace Project0.Business.Database {
     /// </summary>
     public class StoreDatabase : MockDatabase<Store> {
 
-        public List<Store> StoreOptions {
+        public List<Store> FindAll {
             get => mItems;
         }
 

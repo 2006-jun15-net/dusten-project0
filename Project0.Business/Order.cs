@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 
 using Project0.Business.Behavior;
+using Project0.Business.Database;
 
 namespace Project0.Business {
 
@@ -15,6 +16,8 @@ namespace Project0.Business {
         /// <summary>
         /// 
         /// </summary>
+        /// 
+        // TODO Product quantities
         public List<Product> Products { get; set; }
 
         /// <summary>
@@ -25,24 +28,36 @@ namespace Project0.Business {
         /// <summary>
         /// ID of the customer who placed the order
         /// </summary>
-        public int CustomerID { get; set; }
+        public ulong CustomerID { get; set; }
 
         /// <summary>
         /// ID of the store the order is for
         /// </summary>
-        public int StoreID { get; set; }
+        public ulong StoreID { get; set; }
 
         /// <summary>
         /// The order's unique ID
         /// </summary>
         public ulong ID { get; set; }
 
-        public Order (List<Product> products) {
-
-            Products = products;
+        public void Finish () {
             Timestamp = DateTime.Now.ToString ("MM/dd/yyyy | hh:mm");
         }
 
         // TODO product quantity logic
+
+        public string ToString (StoreDatabase storeDb, CustomerDatabase customerDb) {
+
+            var store = storeDb.FindByID (StoreID);
+            var customer = customerDb.FindByID (CustomerID);
+
+            string output = $"Order #{ID} placed at {store.Name} by {customer.Name}:";
+
+            foreach (var product in Products) {
+                output += $"\t{product}";
+            }
+
+            return output;
+        }
     }
 }

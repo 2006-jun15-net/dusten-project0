@@ -4,6 +4,7 @@ using System.Text;
 using System.Text.RegularExpressions;
 using Project0.Business.Database;
 using Project0.Business;
+using System.Net.NetworkInformation;
 
 namespace Project0.Main {
 
@@ -13,8 +14,8 @@ namespace Project0.Main {
     /// </summary>
     internal class IOHandler {
 
-        Customer mCurrentCustomer;
-        Store mCurrentStore;
+        private Customer mCurrentCustomer;
+        private Store mCurrentStore;
 
         internal enum Option {
             LIST_ORDERS, NEW_ORDER, QUIT
@@ -64,6 +65,48 @@ namespace Project0.Main {
 
             // TODO load all stores, show selection with "ID: Name" format
             // TODO default choice (no input given) should result in the customer's saved StoreID
+
+            var stores = storeDb.FindAll;
+            var storeNames = new List<string> ();
+
+            foreach (var store in stores) {
+
+                Console.WriteLine ($"{store.ID}: {store.Name}");
+                storeNames.Add (store.Name);
+            }
+
+            Console.Write ($"Please select a store (default={mCurrentCustomer.StoreID}): ");
+            var selectedName = Console.ReadLine ();
+
+            if (selectedName.Trim () == "") {
+
+                mCurrentStore = storeDb.FindByID (mCurrentCustomer.ID);
+                return;
+            }
+
+            Store selection = default;
+
+            while (!storeNames.Contains(selectedName)) {
+
+                try {
+                    ulong selectedID = ulong.Parse (selectedName);
+
+                    selection = storeDb.FindByID (selectedID);
+
+                    if (selection != default(Store)) {
+                        break;
+                    }
+
+                } catch (Exception) { }
+
+                selectedName = Console.ReadLine ();
+            }
+
+            if (selection == default(Store)) {
+                selection = storeDb.FindByName (selectedName);
+            }
+
+            mCurrentStore = selection;
         }
 
         /// <summary>
@@ -71,7 +114,30 @@ namespace Project0.Main {
         /// </summary>
         /// <returns></returns>
         internal Option AcceptCustomerOption () {
-            throw new NotImplementedException ();
+            
+            string input = "";
+            var inputReg = @"^[lnq]$";
+
+            while (!Regex.Match (input, inputReg).Success) {
+
+                Console.Write ("Choose an option (h for help): ");
+                input = Console.ReadLine ().ToLower ();
+
+                if (input == "h") {
+                    
+                    Console.WriteLine("\nH/h: Show this help message");
+                    Console.WriteLine("L/l: List all orders for current customer");
+                    Console.WriteLine("N/n: Start a new order");
+                    Console.WriteLine("Q/q: Quit\n");
+                }
+            }
+
+            return input switch
+            {
+                "l" => Option.LIST_ORDERS,
+                "n" => Option.NEW_ORDER,
+                _ => Option.QUIT,
+            };
         }
 
         /// <summary>
@@ -79,7 +145,22 @@ namespace Project0.Main {
         /// </summary>
         /// <param name="orderDb"></param>
         internal void ListCustomerOrders (OrderDatabase orderDb) {
-            throw new NotImplementedException ();
+            
+            Console.WriteLine ();
+
+            var orders = orderDb.FindByCustomer (mCurrentCustomer);
+
+            if (orders.Count == 0) {
+
+                Console.WriteLine ($"{mCurrentCustomer.Name} has no orders\n");
+                return;
+            }
+
+            foreach (var order in orders) {
+                Console.WriteLine ($"{order.ID}: {order}");
+            }
+
+            Console.WriteLine ();
         }
 
         /// <summary>
@@ -87,7 +168,29 @@ namespace Project0.Main {
         /// </summary>
         /// <param name="orderDb"></param>
         internal void NewCustomerOrder (OrderDatabase orderDb) {
-            throw new NotImplementedException ();
+
+            var products = new List<Product> ();
+
+            // TODO allow customer to "shop"
+            // TDOO list store options
+            // TODO allow customer to choose product
+            // TODO allow customer to say quantity
+            // TODO repeat until done
+            // TODO add to list of products as customer is "shopping"
+
+            bool ordering = true;
+
+            while (ordering) {
+
+                mCurrentStore.ShowProductStock ();
+
+                // TODO accept product name (or 'q' to quit shopping)
+                // TODO accept quantity
+                // TODO validate quantity
+                // TODO add to list, remove quantity from store
+            }
+
+            orderDb.AddOrder (mCurrentCustomer, mCurrentStore, products);
         }
     }
 }

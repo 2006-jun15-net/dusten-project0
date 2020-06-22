@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System;
+using System.Collections.Generic;
 
 using Project0.Business.Behavior;
 
@@ -12,7 +13,7 @@ namespace Project0.Business {
         /// <summary>
         /// 
         /// </summary>
-        public Dictionary<Product, int> Quantities { get; set; }
+        public List<Product> Products { get; set; }
 
         /// <summary>
         /// 
@@ -23,9 +24,21 @@ namespace Project0.Business {
         /// The store's unique ID
         /// </summary>
         public ulong ID { get; set; }
+
+        public void ShowProductStock () {
+
+            Console.WriteLine ();
+
+            foreach (var product in Products) {
+
+                if (product.Quantity == 0) {
+                    continue;
+                }
+
+                Console.WriteLine (product);
+            }
+
+            Console.WriteLine ();
+        }
     }
-
-
-
-    // TODO 'stock' of products to order from
 }

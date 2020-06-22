@@ -178,15 +178,34 @@ namespace Project0.Main {
             // TODO repeat until done
             // TODO add to list of products as customer is "shopping"
 
-            bool ordering = true;
+            mCurrentStore.ShowProductStock ();
 
-            while (ordering) {
+            while (true) {
 
-                mCurrentStore.ShowProductStock ();
+                Console.Write ("Please choose a product (q to quit, l to relist): ");
+                var input = Console.ReadLine ().ToLower ();
 
-                // TODO accept product name (or 'q' to quit shopping)
-                // TODO accept quantity
-                // TODO validate quantity
+                if (input == "q") {
+                    break;
+                }
+
+                if (input == "l") {
+                    mCurrentStore.ShowProductStock ();
+                }
+
+                if (!mCurrentStore.HasProductInStock (input)) {
+                    Console.WriteLine ($"Product {input} is out of stock");
+                }
+
+                else {
+
+                    Console.WriteLine ("How many: ");
+
+                    while (true) {
+
+                        // TODO verify quantity (verify numeric input, verify quantity in stock)
+                    }
+                }
                 // TODO add to list, remove quantity from store
             }
 

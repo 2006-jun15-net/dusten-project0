@@ -1,0 +1,17 @@
+[
+	{
+		"Products": [
+		
+			{
+				"Name": "Milk",
+				"Price": 1.50,
+				"Quantity": 2
+			}
+		],
+		
+		"Timestamp": "2000-05-23T00:00:00",
+		"CustomerID": 0,
+		"StoreID": 0,
+		"ID": 0
+	}
+]

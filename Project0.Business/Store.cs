@@ -40,5 +40,22 @@ namespace Project0.Business {
 
             Console.WriteLine ();
         }
+
+        /// <summary>
+        /// Check if the current product exists and is in stock
+        /// </summary>
+        /// <param name="input">Name of the product</param>
+        /// <returns>True if the product is in stock</returns>
+        public bool HasProductInStock (string input) {
+
+            foreach (var product in Products) {
+
+                if (product.Name == input) {
+                    return product.Quantity > 0;
+                }
+            }
+
+            return false;
+        }
     }
 }

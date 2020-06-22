@@ -23,7 +23,7 @@ namespace Project0.Business {
         /// <summary>
         /// 
         /// </summary>
-        public string Timestamp {  get; set; }
+        public DateTime Timestamp {  get; set; }
 
         /// <summary>
         /// ID of the customer who placed the order
@@ -41,7 +41,7 @@ namespace Project0.Business {
         public ulong ID { get; set; }
 
         public void Finish () {
-            Timestamp = DateTime.Now.ToString ("MM/dd/yyyy | hh:mm");
+            Timestamp = DateTime.Now;
         }
 
         // TODO product quantity logic

@@ -1,0 +1,21 @@
+[
+	{
+		"Products": [
+			
+			{
+				"Name": "Milk",
+				"Price": 1.50,
+				"Quantity": 50
+			},
+			
+			{
+				"Name": "Cheese",
+				"Price": 2.00,
+				"Quantity": 50
+			}
+		],
+		
+		"Name": "Milk and Cheese",
+		"ID": 0
+	}
+]

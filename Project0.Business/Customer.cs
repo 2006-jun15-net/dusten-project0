@@ -34,6 +34,6 @@ namespace Project0.Business {
         /// <summary>
         /// Store ID that the customer is currently ordering from
         /// </summary>
-        public int StoreID { get; set; }
+        public ulong StoreID { get; set; }
     }
 }

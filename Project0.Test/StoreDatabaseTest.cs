@@ -4,15 +4,14 @@ using Xunit;
 using Project0.Business.Database;
 
 namespace Project0.Test {
-
-    public class OrderDatabaseTest {
+    public class StoreDatabaseTest {
 
         [Fact]
         public void TestLoadFromJsonFile () {
 
-            /*var orderDb = new OrderDatabase ();
+            /*var storeDb = new StoreDatabase ();
 
-            orderDb.LoadItems ("../../../../orders.json");*/
+            storeDb.LoadItems ("../../../../stores.json");*/
         }
     }
 }

@@ -13,6 +13,8 @@ namespace Project0.Business {
 
         private const int MAX_PRODUCTS = 20;
 
+        private int mNetQuantity;
+
         /// <summary>
         /// 
         /// </summary>
@@ -40,11 +42,37 @@ namespace Project0.Business {
         /// </summary>
         public ulong ID { get; set; }
 
+        public Order (Customer customer, Store store) {
+
+            CustomerID = customer.ID;
+            StoreID = store.ID;
+
+            Products = new List<Product> ();
+            mNetQuantity = 0;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="product"></param>
+        /// <returns></returns>
+        public bool AddProduct (Product product) {
+
+            if (mNetQuantity + product.Quantity > MAX_PRODUCTS) {
+                return false;
+            }
+
+            Products.Add (product);
+
+            return true;
+        }
+
+        /// <summary>
+        /// FInalize the order w/ timestamp
+        /// </summary>
         public void Finish () {
             Timestamp = DateTime.Now;
         }
-
-        // TODO product quantity logic
 
         public string ToString (StoreDatabase storeDb, CustomerDatabase customerDb) {
 

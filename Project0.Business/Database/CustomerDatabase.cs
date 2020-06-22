@@ -7,6 +7,8 @@ namespace Project0.Business.Database {
     /// </summary>
     public class CustomerDatabase : MockDatabase<Customer> {
 
+        public CustomerDatabase (string jsonFile) : base (jsonFile) { }
+
         public Customer AddCustomer(string firstname, string lastname) {
 
             mUuid += 1;

@@ -10,9 +10,9 @@ namespace Project0.Test {
         [Fact]
         public void TestLoadFromJsonFile () {
             
-            var customerDb = new CustomerDatabase ();
+            var customerDb = new CustomerDatabase ("../../../../customers.json");
 
-            customerDb.LoadItems ("../../../../customers.json");
+            customerDb.LoadItems ();
 
             var testCustomer = customerDb.FindByID (0);
 

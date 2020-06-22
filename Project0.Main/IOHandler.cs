@@ -5,6 +5,7 @@ using System.Text.RegularExpressions;
 using Project0.Business.Database;
 using Project0.Business;
 using System.Net.NetworkInformation;
+using System.Reflection.Metadata.Ecma335;
 
 namespace Project0.Main {
 
@@ -22,9 +23,11 @@ namespace Project0.Main {
         }
 
         /// <summary>
-        /// 
+        /// Customer inputs their name so the system can attempt
+        /// to find their existing records, or create new records
+        /// if none already exist
         /// </summary>
-        /// <param name="customerDb"></param>
+        /// <param name="customerDb">Database of customers</param>
         internal void AcceptCustomerName (CustomerDatabase customerDb) {
 
             Console.Write ("Please enter your name: ");
@@ -58,13 +61,11 @@ namespace Project0.Main {
         }
 
         /// <summary>
-        /// 
+        /// Customer chooses which store they want to shop at
+        /// (defaults to the last store they shopped at)
         /// </summary>
-        /// <param name="storeDb"></param>
+        /// <param name="storeDb">Database of stores</param>
         internal void AcceptStoreChoice (StoreDatabase storeDb) {
-
-            // TODO load all stores, show selection with "ID: Name" format
-            // TODO default choice (no input given) should result in the customer's saved StoreID
 
             var stores = storeDb.FindAll;
             var storeNames = new List<string> ();
@@ -107,12 +108,14 @@ namespace Project0.Main {
             }
 
             mCurrentStore = selection;
+            mCurrentCustomer.StoreID = mCurrentStore.ID;
         }
 
         /// <summary>
-        /// 
+        /// The customer can choose to list their current orders,
+        /// start a new order, or quit the application
         /// </summary>
-        /// <returns></returns>
+        /// <returns>An Option based on the user's input</returns>
         internal Option AcceptCustomerOption () {
             
             string input = "";
@@ -143,7 +146,7 @@ namespace Project0.Main {
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="orderDb"></param>
+        /// <param name="orderDb">Database of customer orders</param>
         internal void ListCustomerOrders (OrderDatabase orderDb) {
             
             Console.WriteLine ();
@@ -164,19 +167,13 @@ namespace Project0.Main {
         }
 
         /// <summary>
-        /// 
+        /// Allow the customer to create a new order by "shopping" for 
+        /// products in the currently selected store
         /// </summary>
-        /// <param name="orderDb"></param>
+        /// <param name="orderDb">Database of customer orders</param>
         internal void NewCustomerOrder (OrderDatabase orderDb) {
 
-            var products = new List<Product> ();
-
-            // TODO allow customer to "shop"
-            // TDOO list store options
-            // TODO allow customer to choose product
-            // TODO allow customer to say quantity
-            // TODO repeat until done
-            // TODO add to list of products as customer is "shopping"
+            var order = new Order (mCurrentCustomer, mCurrentStore);
 
             mCurrentStore.ShowProductStock ();
 
@@ -199,17 +196,43 @@ namespace Project0.Main {
 
                 else {
 
-                    Console.WriteLine ("How many: ");
+                    var productFromStore = mCurrentStore.GetProductByName (input);
 
-                    while (true) {
+                    Console.Write ("How many: ");
 
-                        // TODO verify quantity (verify numeric input, verify quantity in stock)
+                    int quantity; // = 0
+
+                    while (true) { // (quantity <= 0)
+
+                        if (!int.TryParse(Console.ReadLine (), out quantity)) {
+
+                            Console.Write("Please input a numeric value: ");
+                            continue;
+                        }
+
+                        if (quantity > 0) {
+                            
+                            if (quantity > productFromStore.Quantity) {
+
+                                Console.WriteLine ($"Invalid quantity of {productFromStore.Name}");
+                                Console.Write ("How many: ");
+                            }
+
+                            else {
+                                break;
+                            }
+                        }
                     }
+
+                    var product = new Product(productFromStore, quantity);
+
+                    productFromStore.Quantity -= quantity;
+                    order.AddProduct (product);
                 }
-                // TODO add to list, remove quantity from store
             }
 
-            orderDb.AddOrder (mCurrentCustomer, mCurrentStore, products);
+            order.Finish ();
+            orderDb.AddOrder (order);
         }
     }
 }

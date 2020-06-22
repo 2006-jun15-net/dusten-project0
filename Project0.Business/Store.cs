@@ -44,18 +44,30 @@ namespace Project0.Business {
         /// <summary>
         /// Check if the current product exists and is in stock
         /// </summary>
-        /// <param name="input">Name of the product</param>
+        /// <param name="name">Name of the product</param>
         /// <returns>True if the product is in stock</returns>
-        public bool HasProductInStock (string input) {
+        public bool HasProductInStock (string name) {
 
             foreach (var product in Products) {
 
-                if (product.Name == input) {
+                if (product.Name == name) {
                     return product.Quantity > 0;
                 }
             }
 
             return false;
+        }
+
+        public Product GetProductByName (string name) {
+            
+            foreach (var product in Products) {
+
+                if (product.Name == name) {
+                    return product;
+                }
+            }
+
+            return default;
         }
     }
 }

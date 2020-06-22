@@ -16,9 +16,13 @@ namespace Project0.Business.Database {
         protected List<T> mItems;
         protected ulong mUuid;
 
-        public MockDatabase () {
+        private string mJsonFile;
+
+        public MockDatabase (string jsonFile) {
 
             mItems = new List<T> ();
+
+            mJsonFile = jsonFile;
             mUuid = 0;
         }
 
@@ -42,10 +46,9 @@ namespace Project0.Business.Database {
         /// <summary>
         /// Deserializes all items from a JSON file
         /// </summary>
-        /// <param name="jsonFile">JSON file path</param>
-        public async void LoadItems (string jsonFile) {
+        public async void LoadItems () {
 
-            string jsonText = await File.ReadAllTextAsync (jsonFile);
+            string jsonText = await File.ReadAllTextAsync (mJsonFile);
             mItems = JsonConvert.DeserializeObject<List<T>>(jsonText);
 
             foreach (var item in mItems) {
@@ -59,11 +62,10 @@ namespace Project0.Business.Database {
         /// <summary>
         /// Serializes all items and saves the resulting JSON text to a file
         /// </summary>
-        /// <param name="jsonFile">JSON file path</param>
-        public async void SaveItems (string jsonFile) {
+        public async void SaveItems () {
 
             string jsonText = JsonConvert.SerializeObject (mItems);
-            await File.WriteAllTextAsync (jsonFile, jsonText);
+            await File.WriteAllTextAsync (mJsonFile, jsonText);
         }
     }
 }

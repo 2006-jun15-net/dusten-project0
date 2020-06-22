@@ -6,11 +6,15 @@ namespace Project0.Main {
 
         static void Main (string[] args) {
 
-            var customerDb = new CustomerDatabase ();
-            var orderDb = new OrderDatabase ();
-            var storeDb = new StoreDatabase ();
+            var customerDb = new CustomerDatabase ("../../../../customers.json");
+            var orderDb = new OrderDatabase ("../../../../orders.json");
+            var storeDb = new StoreDatabase ("../../../../stores.json");
 
-            // TODO load from JSON file, if applicable
+            // JSON files are stored at the solution's parent directory
+            // (this would need to change if running the program by itself)
+            customerDb.LoadItems ();
+            orderDb.LoadItems ();
+            storeDb.LoadItems ();
 
             var handler = new IOHandler ();
 
@@ -47,6 +51,10 @@ namespace Project0.Main {
                         break;
                 }
             }
+
+            customerDb.SaveItems ();
+            orderDb.SaveItems ();
+            storeDb.SaveItems ();
         }
     }
 }

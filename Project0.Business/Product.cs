@@ -22,6 +22,13 @@ namespace Project0.Business {
         /// </summary>
         public int Quantity { get; set; }
 
+        public Product (Product other, int quantity) {
+
+            Name = other.Name;
+            Price = other.Price;
+            Quantity = quantity;
+        }
+
         public override string ToString () {
             return $"{Name} - ${Price:#.00} (quamtity: {Quantity}";
         }

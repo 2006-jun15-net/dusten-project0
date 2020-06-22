@@ -8,23 +8,17 @@ namespace Project0.Business.Database {
     /// </summary>
     public class OrderDatabase : MockDatabase<Order> {
 
+        public OrderDatabase (string jsonFile) : base (jsonFile) { }
+
         /// <summary>
         /// 
         /// </summary>
-        /// <param name="customer"></param>
-        /// <param name="store"></param>
-        public void AddOrder (Customer customer, Store store, List<Product> products) {
+        /// <param name="order"></param>
+        public void AddOrder (Order order) {
 
             mUuid += 1;
 
-            var order = new Order () {
-
-                CustomerID = customer.ID,
-                StoreID = store.ID,
-                Products = products,
-                ID = mUuid
-            };
-
+            order.ID = mUuid;
             mItems.Add (order);
         }
 

@@ -7,6 +7,8 @@ namespace Project0.Business.Database {
     /// </summary>
     public class StoreDatabase : MockDatabase<Store> {
 
+        public StoreDatabase (string jsonFile) : base (jsonFile) { }
+
         public List<Store> FindAll {
             get => mItems;
         }

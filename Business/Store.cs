@@ -1,21 +1,31 @@
-﻿using Project0.Business.Behavior;
-using System;
+﻿using System.Collections.Generic;
+
+using Project0.Business.Behavior;
 
 namespace Project0.Business {
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class Store : ISerialized {
 
-        readonly int mID;
+        /// <summary>
+        /// 
+        /// </summary>
+        public Dictionary<Product, int> Quantities { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Name { get; set; }
 
         /// <summary>
         /// The store's unique ID
         /// </summary>
-        public int ID {
-            get => mID;
-        }
-
-        public Store (int id) {
-            mID = id;
-        }
+        public ulong ID { get; set; }
     }
+
+
+
+    // TODO 'stock' of products to order from
 }

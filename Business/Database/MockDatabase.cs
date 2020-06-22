@@ -14,9 +14,12 @@ namespace Project0.Business.Database {
     public class MockDatabase<T> where T : ISerialized {
 
         protected List<T> mItems;
+        protected ulong mUuid;
 
         public MockDatabase () {
+
             mItems = new List<T> ();
+            mUuid = 0;
         }
 
         /// <summary>
@@ -24,7 +27,7 @@ namespace Project0.Business.Database {
         /// </summary>
         /// <param name="id">ID</param>
         /// <returns>Item</returns>
-        public T FindByID (int id) {
+        public T FindByID (ulong id) {
 
             foreach (var item in mItems) {
 
@@ -44,6 +47,13 @@ namespace Project0.Business.Database {
 
             string jsonText = await File.ReadAllTextAsync (jsonFile);
             mItems = JsonConvert.DeserializeObject<List<T>>(jsonText);
+
+            foreach (var item in mItems) {
+
+                if (item.ID > mUuid) {
+                    mUuid = item.ID;
+                }
+            }
         }
 
         /// <summary>

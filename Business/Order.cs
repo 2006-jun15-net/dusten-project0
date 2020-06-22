@@ -1,18 +1,48 @@
-﻿using Project0.Business.Behavior;
-using System;
+﻿using System;
+using System.Collections.Generic;
+
+using Project0.Business.Behavior;
 
 namespace Project0.Business {
 
+    /// <summary>
+    /// 
+    /// </summary>
     public class Order : ISerialized {
 
-        readonly int mID;
+        private const int MAX_PRODUCTS = 20;
 
-        public int ID {
-            get => mID;
+        /// <summary>
+        /// 
+        /// </summary>
+        public List<Product> Products { get; set; }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        public string Timestamp {  get; set; }
+
+        /// <summary>
+        /// ID of the customer who placed the order
+        /// </summary>
+        public int CustomerID { get; set; }
+
+        /// <summary>
+        /// ID of the store the order is for
+        /// </summary>
+        public int StoreID { get; set; }
+
+        /// <summary>
+        /// The order's unique ID
+        /// </summary>
+        public ulong ID { get; set; }
+
+        public Order (List<Product> products) {
+
+            Products = products;
+            Timestamp = DateTime.Now.ToString ("MM/dd/yyyy | hh:mm");
         }
 
-        public Order (int id) {
-            mID = id;
-        }
+        // TODO product quantity logic
     }
 }

@@ -11,7 +11,7 @@ namespace Project0.Business.Database {
         public OrderDatabase (string jsonFile) : base (jsonFile) { }
 
         /// <summary>
-        /// 
+        /// Adds an order to the database
         /// </summary>
         /// <param name="order"></param>
         public void AddOrder (Order order) {

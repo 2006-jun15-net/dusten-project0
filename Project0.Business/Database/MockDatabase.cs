@@ -4,6 +4,7 @@ using System.Collections.Generic;
 using Newtonsoft.Json;
 
 using Project0.Business.Behavior;
+using System;
 
 namespace Project0.Business.Database {
 
@@ -16,7 +17,7 @@ namespace Project0.Business.Database {
         protected List<T> mItems;
         protected ulong mUuid;
 
-        private string mJsonFile;
+        private readonly string mJsonFile;
 
         public MockDatabase (string jsonFile) {
 
@@ -49,7 +50,8 @@ namespace Project0.Business.Database {
         public async void LoadItems () {
 
             string jsonText = await File.ReadAllTextAsync (mJsonFile);
-            mItems = JsonConvert.DeserializeObject<List<T>>(jsonText);
+
+            mItems = JsonConvert.DeserializeObject<List<T>> (jsonText);
 
             foreach (var item in mItems) {
 

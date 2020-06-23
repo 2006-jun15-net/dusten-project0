@@ -41,6 +41,8 @@ namespace Project0.Business {
         /// </summary>
         public ulong ID { get; set; }
 
+        public Order () { }
+
         public Order (Customer customer, Store store) {
 
             CustomerID = customer.ID;

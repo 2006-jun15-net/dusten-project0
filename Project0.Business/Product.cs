@@ -22,6 +22,8 @@ namespace Project0.Business {
         /// </summary>
         public int Quantity { get; set; }
 
+        public Product () { }
+
         public Product (Product other, int quantity) {
 
             Name = other.Name;

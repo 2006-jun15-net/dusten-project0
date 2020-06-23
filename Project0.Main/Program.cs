@@ -32,9 +32,14 @@ namespace Project0.Main {
                 // create a new order, or quit the application
                 switch (handler.AcceptCustomerOption ()) {
 
-                    case IOHandler.Option.LIST_ORDERS:
+                    case IOHandler.Option.LIST_CUSTOMER_ORDERS:
 
-                        handler.ListCustomerOrders (orderDb);
+                        handler.ListCustomerOrders (customerDb, orderDb, storeDb);
+                        break;
+
+                    case IOHandler.Option.LIST_STORE_ORDERS:
+
+                        handler.ListStoreOrders (customerDb, orderDb, storeDb);
                         break;
 
                     case IOHandler.Option.NEW_ORDER:

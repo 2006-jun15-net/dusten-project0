@@ -1,11 +1,9 @@
 ﻿using System;
 using System.Collections.Generic;
-using System.Text;
 using System.Text.RegularExpressions;
-using Project0.Business.Database;
+
 using Project0.Business;
-using System.Net.NetworkInformation;
-using System.Reflection.Metadata.Ecma335;
+using Project0.Business.Database;
 
 namespace Project0.Main {
 
@@ -15,11 +13,13 @@ namespace Project0.Main {
     /// </summary>
     internal class IOHandler {
 
+        // TODO cleanup the input validation sections
+
         private Customer mCurrentCustomer;
         private Store mCurrentStore;
 
         internal enum Option {
-            LIST_ORDERS, NEW_ORDER, QUIT
+            LIST_CUSTOMER_ORDERS, LIST_STORE_ORDERS, NEW_ORDER, QUIT
         }
 
         /// <summary>
@@ -119,7 +119,7 @@ namespace Project0.Main {
         internal Option AcceptCustomerOption () {
             
             string input = "";
-            var inputReg = @"^[lnq]$";
+            var inputReg = @"^[lsnq]$";
 
             while (!Regex.Match (input, inputReg).Success) {
 
@@ -130,6 +130,7 @@ namespace Project0.Main {
                     
                     Console.WriteLine("\nH/h: Show this help message");
                     Console.WriteLine("L/l: List all orders for current customer");
+                    Console.WriteLine("S/s: List alll orders placed at the current store");
                     Console.WriteLine("N/n: Start a new order");
                     Console.WriteLine("Q/q: Quit\n");
                 }
@@ -137,30 +138,51 @@ namespace Project0.Main {
 
             return input switch
             {
-                "l" => Option.LIST_ORDERS,
+                "l" => Option.LIST_CUSTOMER_ORDERS,
+                "s" => Option.LIST_STORE_ORDERS,
                 "n" => Option.NEW_ORDER,
                 _ => Option.QUIT,
             };
         }
 
         /// <summary>
-        /// 
+        /// List all orders for the current customer
         /// </summary>
+        /// <param name="customerDb">Database of customers</param>
         /// <param name="orderDb">Database of customer orders</param>
-        internal void ListCustomerOrders (OrderDatabase orderDb) {
+        /// <param name="storeDb">Database of stores</param>
+        internal void ListCustomerOrders (CustomerDatabase customerDb, OrderDatabase orderDb, StoreDatabase storeDb) {
             
             Console.WriteLine ();
 
             var orders = orderDb.FindByCustomer (mCurrentCustomer);
+            ListOrders (orders, mCurrentCustomer.Name, customerDb, storeDb);
+        }
+
+        /// <summary>
+        /// List all orders placed at the current store
+        /// </summary>
+        /// <param name="customerDb">Database of customers</param>
+        /// <param name="orderDb">Database of customer orders</param>
+        /// <param name="storeDb">Database of stores</param>
+        internal void ListStoreOrders (CustomerDatabase customerDb, OrderDatabase orderDb, StoreDatabase storeDb) {
+            
+            Console.WriteLine ();
+
+            var orders = orderDb.FindByStore (mCurrentStore);
+            ListOrders (orders, mCurrentStore.Name, customerDb, storeDb);
+        }
+
+        private void ListOrders (List<Order> orders, string name, CustomerDatabase customerDb, StoreDatabase storeDb) {
 
             if (orders.Count == 0) {
 
-                Console.WriteLine ($"{mCurrentCustomer.Name} has no orders\n");
+                Console.WriteLine ($"{name} has no orders\n");
                 return;
             }
 
             foreach (var order in orders) {
-                Console.WriteLine ($"{order.ID}: {order}");
+                order.ShowInfo (storeDb, customerDb);
             }
 
             Console.WriteLine ();

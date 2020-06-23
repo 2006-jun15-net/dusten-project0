@@ -9,15 +9,18 @@ namespace Project0.Business.Database {
 
         public StoreDatabase (string jsonFile) : base (jsonFile) { }
 
+        /// <summary>
+        /// Returns all stores in the database
+        /// </summary>
         public List<Store> FindAll {
             get => mItems;
         }
 
         /// <summary>
-        /// 
+        /// Find a single store in the database with the given name
         /// </summary>
-        /// <param name="storename"></param>
-        /// <returns></returns>
+        /// <param name="storename">Name of the store</param>
+        /// <returns>Store with matching name</returns>
         public Store FindByName (string storename) {
 
             foreach (var item in mItems) {
@@ -29,7 +32,5 @@ namespace Project0.Business.Database {
 
             return default;
         }
-
-        // TODO get list of all stores
     }
 }

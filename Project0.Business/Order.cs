@@ -7,7 +7,7 @@ using Project0.Business.Database;
 namespace Project0.Business {
 
     /// <summary>
-    /// 
+    /// Order placed to a store by a customer
     /// </summary>
     public class Order : ISerialized {
 
@@ -16,14 +16,13 @@ namespace Project0.Business {
         private int mNetQuantity;
 
         /// <summary>
-        /// 
+        /// Products added to the order by the customer
         /// </summary>
         /// 
-        // TODO Product quantities
         public List<Product> Products { get; set; }
 
         /// <summary>
-        /// 
+        /// Time when the order was placed (set after customer finished adding products)
         /// </summary>
         public DateTime Timestamp {  get; set; }
 
@@ -52,13 +51,16 @@ namespace Project0.Business {
         }
 
         /// <summary>
-        /// 
+        /// Adds a product to the order and checks whether or not the order 
+        /// has too many products in it
         /// </summary>
         /// <param name="product"></param>
-        /// <returns></returns>
+        /// <returns>False if the added products went over the order quantity limit</returns>
         public bool AddProduct (Product product) {
 
-            if (mNetQuantity + product.Quantity > MAX_PRODUCTS) {
+            mNetQuantity += product.Quantity;
+
+            if (mNetQuantity > MAX_PRODUCTS) {
                 return false;
             }
 
@@ -74,18 +76,29 @@ namespace Project0.Business {
             Timestamp = DateTime.Now;
         }
 
-        public string ToString (StoreDatabase storeDb, CustomerDatabase customerDb) {
+        /// <summary>
+        /// Print all relevant info of this order
+        /// </summary>
+        /// <param name="storeDb">Database of stores</param>
+        /// <param name="customerDb">Database of customers</param>
+        public void ShowInfo (StoreDatabase storeDb, CustomerDatabase customerDb) {
 
             var store = storeDb.FindByID (StoreID);
             var customer = customerDb.FindByID (CustomerID);
 
             string output = $"Order #{ID} placed at {store.Name} by {customer.Name}:";
 
+            double total = 0.0;
+
             foreach (var product in Products) {
+
                 output += $"\t{product}";
+                total += product.Price * product.Quantity;
             }
 
-            return output;
+            output += $"\tOrder total: {total:#.00}";
+
+            Console.WriteLine (output);
         }
     }
 }

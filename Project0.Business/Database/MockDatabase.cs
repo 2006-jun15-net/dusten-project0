@@ -1,10 +1,10 @@
 ﻿using System.IO;
+using System.Linq;
 using System.Collections.Generic;
 
 using Newtonsoft.Json;
 
 using Project0.Business.Behavior;
-using System;
 
 namespace Project0.Business.Database {
 
@@ -34,14 +34,11 @@ namespace Project0.Business.Database {
         /// <returns>Item</returns>
         public T FindByID (ulong id) {
 
-            foreach (var item in mItems) {
+            var items = from item in mItems 
+                        where item.ID == id
+                        select item;
 
-                if (item.ID == id) {
-                    return item;
-                }
-            }
-
-            return default;
+            return items.First ();
         }
 
         /// <summary>

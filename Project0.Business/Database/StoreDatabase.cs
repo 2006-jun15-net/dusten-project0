@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
+using System.Collections.Generic;
 
 namespace Project0.Business.Database {
 
@@ -23,14 +24,11 @@ namespace Project0.Business.Database {
         /// <returns>Store with matching name</returns>
         public Store FindByName (string storename) {
 
-            foreach (var item in mItems) {
+            var stores = from item in mItems
+                        where item.Name == storename
+                        select item;
 
-                if (item.Name == storename) {
-                    return item;
-                }
-            }
-
-            return default;
+            return stores.First ();
         }
     }
 }

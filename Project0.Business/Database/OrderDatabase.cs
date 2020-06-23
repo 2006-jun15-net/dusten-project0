@@ -1,4 +1,4 @@
-﻿using System;
+﻿using System.Linq;
 using System.Collections.Generic;
 
 namespace Project0.Business.Database {
@@ -29,16 +29,11 @@ namespace Project0.Business.Database {
         /// <returns></returns>
         public List<Order> FindByCustomer (Customer customer) {
 
-            var orders = new List<Order> ();
+            var orders = from item in mItems 
+                        where item.CustomerID == customer.ID 
+                        select item;
 
-            foreach (var item in mItems) {
-
-                if (item.CustomerID == customer.ID) {
-                    orders.Add (item);
-                }
-            }
-
-            return orders;
+            return orders.ToList ();
         }
 
         /// <summary>
@@ -48,16 +43,11 @@ namespace Project0.Business.Database {
         /// <returns></returns>
         public List<Order> FindByStore (Store store) {
 
-            var orders = new List<Order> ();
+            var orders = from item in mItems 
+                        where item.StoreID == store.ID 
+                        select item;
 
-            foreach (var item in mItems) {
-
-                if (item.CustomerID == store.ID) {
-                    orders.Add (item);
-                }
-            }
-
-            return orders;
+            return orders.ToList ();
         }
     }
 }

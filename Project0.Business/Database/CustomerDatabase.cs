@@ -1,4 +1,5 @@
-﻿using System.Collections.Generic;
+﻿using System.Linq;
+using System.Collections.Generic;
 
 namespace Project0.Business.Database {
 
@@ -34,14 +35,11 @@ namespace Project0.Business.Database {
         /// <returns>Customer with matching full name</returns>
         public Customer FindByName (string fullname) {
 
-            foreach (var item in mItems) {
+            var customers = from customer in mItems
+                            where customer.Name == fullname
+                            select customer;
 
-                if (item.Name == fullname) {
-                    return item;
-                }
-            }
-
-            return default;
+            return customers.First ();
         }
 
         /// <summary>
@@ -51,16 +49,11 @@ namespace Project0.Business.Database {
         /// <returns>Customers with matching first name</returns>
         public List<Customer> FindByFirstname (string firstname) {
 
-            var customers = new List<Customer> ();
+            var customers = from customer in mItems
+                            where customer.Firstname == firstname
+                            select customer;
 
-            foreach (var item in mItems) {
-
-                if (item.Firstname == firstname) {
-                    customers.Add (item);
-                }
-            }
-
-            return customers;
+            return customers.ToList ();
         }
 
         /// <summary>
@@ -70,16 +63,11 @@ namespace Project0.Business.Database {
         /// <returns>Customers with matching last name</returns>
         public List<Customer> FindByLastname (string lastname) {
             
-            var customers = new List<Customer> ();
+            var customers = from customer in mItems
+                            where customer.Lastname == lastname
+                            select customer;
 
-            foreach (var item in mItems) {
-
-                if (item.Lastname == lastname) {
-                    customers.Add (item);
-                }
-            }
-
-            return customers;
+            return customers.ToList ();
         }
     }
 }

@@ -4,7 +4,9 @@ namespace Project0.Main {
 
     class Program {
 
+#pragma warning disable IDE0060 // Remove unused parameter
         static void Main (string[] args) {
+#pragma warning restore IDE0060 // Remove unused parameter
 
             var customerDb = new CustomerDatabase ("../../../../customers.json");
             var orderDb = new OrderDatabase ("../../../../orders.json");
@@ -28,7 +30,8 @@ namespace Project0.Main {
 
             while (running) {
 
-                // The customer can choose to see their active orders,
+                // The customer can choose to see their orders,
+                // see orders placed at the current store, 
                 // create a new order, or quit the application
                 switch (handler.AcceptCustomerOption ()) {
 

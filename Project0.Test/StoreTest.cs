@@ -6,7 +6,7 @@ namespace Project0.Test {
 
     public class StoreTest {
 
-        private Store mStore;
+        private readonly Store mStore;
 
         public StoreTest () {
 

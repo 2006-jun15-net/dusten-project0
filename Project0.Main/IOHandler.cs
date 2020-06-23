@@ -13,8 +13,6 @@ namespace Project0.Main {
     /// </summary>
     internal class IOHandler {
 
-        // TODO cleanup the input validation sections
-
         private Customer mCurrentCustomer;
         private Store mCurrentStore;
 
@@ -89,16 +87,18 @@ namespace Project0.Main {
 
             while (!storeNames.Contains(selectedName)) {
 
-                try {
-                    ulong selectedID = ulong.Parse (selectedName);
+                bool selectByID = ulong.TryParse (selectedName, out ulong selectedID);
 
-                    selection = storeDb.FindByID (selectedID);
+                if (selectByID) {
+
+                    try {
+                        selection = storeDb.FindByID (selectedID);
+                    } catch (Exception) { }
 
                     if (selection != default(Store)) {
                         break;
                     }
-
-                } catch (Exception) { }
+                }
 
                 selectedName = Console.ReadLine ();
             }

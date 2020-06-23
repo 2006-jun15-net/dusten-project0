@@ -11,6 +11,9 @@ namespace Project0.Business {
     /// </summary>
     public class Order : ISerialized {
 
+        /// <summary>
+        /// Arbitrary maximum quantity of products per order
+        /// </summary>
         private const int MAX_PRODUCTS = 20;
 
         private int mNetQuantity;
@@ -41,15 +44,16 @@ namespace Project0.Business {
         /// </summary>
         public ulong ID { get; set; }
 
-        public Order () { }
-
-        public Order (Customer customer, Store store) {
-
-            CustomerID = customer.ID;
-            StoreID = store.ID;
+        public Order () { 
 
             Products = new List<Product> ();
             mNetQuantity = 0;
+        }
+
+        public Order (Customer customer, Store store) : this () {
+
+            CustomerID = customer.ID;
+            StoreID = store.ID;
         }
 
         /// <summary>

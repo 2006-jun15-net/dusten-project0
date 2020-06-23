@@ -25,6 +25,10 @@ namespace Project0.Business {
         /// </summary>
         public ulong ID { get; set; }
 
+        public Store () {
+            Products = new List<Product> ();
+        }
+
         /// <summary>
         /// Show products that are available for customer purchase
         /// </summary>

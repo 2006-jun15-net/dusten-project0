@@ -96,13 +96,15 @@ namespace Project0.Business {
 
             double total = 0.0;
 
-            foreach (var product in Products) {
+            for (int i = 0; i < Products.Count; i ++) {
 
-                output += $"\t{product}";
+                var product = Products[i];
+
+                output += $"\n\t{i + 1}. {product}\n";
                 total += product.Price * product.Quantity;
             }
 
-            output += $"\tOrder total: {total:#.00}";
+            output += $"\n\tOrder total: {total:#.00}\n";
 
             Console.WriteLine (output);
         }

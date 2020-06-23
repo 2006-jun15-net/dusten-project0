@@ -7,6 +7,9 @@ using Project0.Business;
 using Project0.Business.Database;
 
 namespace Project0.Main {
+    
+    // TODO add '=' buffers before and after 'welcome' messages
+    // TODO typos
 
     /// <summary>
     /// Handles the I/O and validation for interactions
@@ -69,11 +72,11 @@ namespace Project0.Main {
             var stores = storeDb.FindAll;
             var storeNames = new List<string> ();
 
-            Console.WriteLine ("\nStores:\n");
+            Console.WriteLine ("\nStores:");
 
             foreach (var store in stores) {
 
-                Console.WriteLine ($"{store.ID}: {store.Name}");
+                Console.WriteLine ($"\t{store.ID}: {store.Name}");
                 storeNames.Add (store.Name);
             }
 
@@ -111,6 +114,8 @@ namespace Project0.Main {
                 selection = storeDb.FindByName (selectedName);
             }
 
+            Console.WriteLine ($"\nWelcome to {selection.Name}!");
+
             mCurrentStore = selection;
             mCurrentCustomer.StoreID = mCurrentStore.ID;
         }
@@ -136,7 +141,7 @@ namespace Project0.Main {
                     
                     Console.WriteLine("\nH/h: Show this help message");
                     Console.WriteLine("L/l: List all orders for current customer");
-                    Console.WriteLine("S/s: List alll orders placed at the current store");
+                    Console.WriteLine("S/s: List all orders placed at the current store");
                     Console.WriteLine("N/n: Start a new order");
                     Console.WriteLine("Q/q: Quit\n");
                 }
@@ -158,8 +163,6 @@ namespace Project0.Main {
         /// <param name="orderDb">Database of customer orders</param>
         /// <param name="storeDb">Database of stores</param>
         internal void ListCustomerOrders (CustomerDatabase customerDb, OrderDatabase orderDb, StoreDatabase storeDb) {
-            
-            Console.WriteLine ();
 
             var orders = orderDb.FindByCustomer (mCurrentCustomer);
             ListOrders (orders, mCurrentCustomer.Name, customerDb, storeDb);
@@ -172,14 +175,14 @@ namespace Project0.Main {
         /// <param name="orderDb">Database of customer orders</param>
         /// <param name="storeDb">Database of stores</param>
         internal void ListStoreOrders (CustomerDatabase customerDb, OrderDatabase orderDb, StoreDatabase storeDb) {
-            
-            Console.WriteLine ();
 
             var orders = orderDb.FindByStore (mCurrentStore);
             ListOrders (orders, mCurrentStore.Name, customerDb, storeDb);
         }
 
         private void ListOrders (List<Order> orders, string name, CustomerDatabase customerDb, StoreDatabase storeDb) {
+
+            Console.WriteLine ();
 
             if (orders.Count == 0) {
 
@@ -190,8 +193,6 @@ namespace Project0.Main {
             foreach (var order in orders) {
                 order.ShowInfo (storeDb, customerDb);
             }
-
-            Console.WriteLine ();
         }
 
         /// <summary>

@@ -1,8 +1,1 @@
-[
-	{
-		"Firstname": "John",
-		"Lastname": "Smith",
-		"ID": 0,
-		"StoreID": 0
-	}
-]
+[{"Firstname":"John","Lastname":"Smith","Name":"John Smith","ID":0,"StoreID":0}]

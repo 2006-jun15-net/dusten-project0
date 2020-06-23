@@ -32,7 +32,7 @@ namespace Project0.Business {
         }
 
         public override string ToString () {
-            return $"{Name} - ${Price:#.00} (quamtity: {Quantity}";
+            return $"{Name} - ${Price:#.00} (quantity: {Quantity})";
         }
     }
 }

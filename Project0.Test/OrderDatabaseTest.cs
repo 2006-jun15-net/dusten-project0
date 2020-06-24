@@ -9,11 +9,11 @@ namespace Project0.Test {
 
     public class OrderDatabaseTest {
 
-        private readonly OrderDatabase mOrderDatabase;
+        private readonly OrderRepository mOrderDatabase;
 
         public OrderDatabaseTest () {
 
-            mOrderDatabase = new OrderDatabase ("../../../../orders.json");
+            mOrderDatabase = new OrderRepository ("../../../../orders.json");
             mOrderDatabase.LoadItems ();
         }
 
@@ -42,7 +42,6 @@ namespace Project0.Test {
 
             Assert.Equal ("Milk", products[0].Name);
             Assert.Equal (1.5, products[0].Price);
-            Assert.Equal (2, products[0].Quantity);
         }
 
         [Fact]

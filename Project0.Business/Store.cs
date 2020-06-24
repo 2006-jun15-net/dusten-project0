@@ -1,7 +1,9 @@
 ﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 
 using Project0.Business.Behavior;
+using Project0.Business.Database;
 
 namespace Project0.Business {
 
@@ -14,6 +16,11 @@ namespace Project0.Business {
         /// The store's listed products
         /// </summary>
         public List<Product> Products { get; set; }
+
+        /// <summary>
+        /// Quantities of each product
+        /// </summary>
+        public List<int> Quantities { get; set; }
 
         /// <summary>
         /// The store's name
@@ -36,10 +43,12 @@ namespace Project0.Business {
 
             Console.WriteLine ();
 
-            foreach (var product in Products) {
+            var zipped = Products.Zip (Quantities);
+
+            foreach (var (product, quantity) in zipped) {
 
                 // Out of stock
-                if (product.Quantity == 0) {
+                if (quantity == 0) {
                     continue;
                 }
 
@@ -50,16 +59,54 @@ namespace Project0.Business {
         }
 
         /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="name"></param>
+        /// <returns></returns>
+        public int ProductQuantity (string name) {
+
+            var zipped = Products.Zip (Quantities);
+
+            foreach (var (product, quantity) in zipped) {
+
+                if (product.Name == name) {
+                    return quantity;
+                }
+            }
+
+            return 0;
+        }
+
+        /// <summary>
+        /// 
+        /// </summary>
+        /// <param name="productName"></param>
+        /// <param name="quantity"></param>
+        internal void RemoveProduct (string productName, int quantity) {
+            
+            for (int i = 0; i < Products.Count; i ++) {
+
+                if (Products[i].Name == productName) {
+
+                    Quantities[i] -= quantity;
+                    break;
+                }
+            }
+        }
+
+        /// <summary>
         /// Check if the current product exists and is in stock
         /// </summary>
         /// <param name="name">Name of the product</param>
         /// <returns>True if the product is in stock</returns>
         public bool HasProductInStock (string name) {
 
-            foreach (var product in Products) {
+            var zipped = Products.Zip (Quantities);
+
+            foreach (var (product, quantity) in zipped) {
 
                 if (product.Name == name) {
-                    return product.Quantity > 0;
+                    return quantity > 0;
                 }
             }
 

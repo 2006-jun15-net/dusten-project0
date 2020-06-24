@@ -1,1 +1,1 @@
-[{"Products":[{"Name":"Milk","Price":1.5,"Quantity":50},{"Name":"Cheese","Price":2.0,"Quantity":50}],"Name":"Milk and Cheese","ID":0}]
+[{"Products":[1,2],"Quantities":[50,50],"Name":"Milk and Cheese","ID":1}]

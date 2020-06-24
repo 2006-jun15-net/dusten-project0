@@ -1,6 +1,7 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Linq;
+using System.Net.Http.Headers;
 using Project0.Business.Behavior;
 using Project0.Business.Database;
 
@@ -14,15 +15,18 @@ namespace Project0.Business {
         /// <summary>
         /// Arbitrary maximum quantity of products per order
         /// </summary>
-        private const int MAX_PRODUCTS = 20;
-
-        private int mNetQuantity;
+        public const int MAX_PRODUCTS = 20;
 
         /// <summary>
         /// Products added to the order by the customer
         /// </summary>
         /// 
         public List<Product> Products { get; set; }
+
+        /// <summary>
+        /// Quantity of each product in the order
+        /// </summary>
+        public List<int> Quantities { get; set; }
 
         /// <summary>
         /// Time when the order was placed (set after customer finished adding products)
@@ -44,10 +48,14 @@ namespace Project0.Business {
         /// </summary>
         public ulong ID { get; set; }
 
+        public int ProductCount {
+            get => Quantities.Sum (); 
+        }
+
         public Order () { 
 
             Products = new List<Product> ();
-            mNetQuantity = 0;
+            Quantities = new List<int> ();
         }
 
         public Order (Customer customer, Store store) : this () {
@@ -62,15 +70,18 @@ namespace Project0.Business {
         /// </summary>
         /// <param name="product"></param>
         /// <returns>False if the added products went over the order quantity limit</returns>
-        public bool AddProduct (Product product) {
+        public bool AddProduct (Store store, string productName, int quantity) {
 
-            mNetQuantity += product.Quantity;
+            // TODO FIX
 
-            if (mNetQuantity > MAX_PRODUCTS) {
+            if (ProductCount + quantity > MAX_PRODUCTS) {
                 return false;
             }
 
-            Products.Add (product);
+            store.RemoveProduct (productName, quantity);
+
+            Quantities.Add (quantity);
+            Products.Add (store.GetProductByName (productName));
 
             return true;
         }
@@ -83,30 +94,41 @@ namespace Project0.Business {
         }
 
         /// <summary>
-        /// Print all relevant info of this order
+        /// Print all info of an order from a specific customer
         /// </summary>
+        /// <param name="customerName">Customer's name</param>
         /// <param name="storeDb">Database of stores</param>
-        /// <param name="customerDb">Database of customers</param>
-        public void ShowInfo (StoreDatabase storeDb, CustomerDatabase customerDb) {
+        public void ShowInfoForStore (StoreRepository storeDb) {
 
             var store = storeDb.FindByID (StoreID);
-            var customer = customerDb.FindByID (CustomerID);
+            Console.WriteLine ($"Order #{ID} placed at {store.Name}:\n");
 
-            string output = $"Order #{ID} placed at {store.Name} by {customer.Name}:";
+            ShowInfo (store);
+            Console.WriteLine ();
+        }
+
+        public void ShowInfoForCustomer (CustomerRepository customerDb, Store store) {
+
+            var customer = customerDb.FindByID (CustomerID);
+            Console.WriteLine ($"Order #{ID} placed by {customer.Name}:\n");
+
+            ShowInfo (store);
+            Console.WriteLine ();
+        }
+
+        public void ShowInfo (Store store) {
 
             double total = 0.0;
 
             for (int i = 0; i < Products.Count; i ++) {
 
                 var product = Products[i];
+                Console.WriteLine ($"\t{i + 1}. {product}");
 
-                output += $"\n\t{i + 1}. {product}\n";
-                total += product.Price * product.Quantity;
+                total += product.Price * store.ProductQuantity (product.Name);
             }
 
-            output += $"\n\tOrder total: {total:#.00}\n";
-
-            Console.WriteLine (output);
+            Console.Write($"\n\tOrder total: ${total:#.00}");
         }
     }
 }

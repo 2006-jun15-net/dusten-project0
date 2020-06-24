@@ -10,18 +10,16 @@ namespace Project0.Test {
 
         public StoreTest () {
 
-            mStore = new Store ();
+            mStore = new Store () {
+                Quantities = {1, 0}
+            };
 
             mStore.Products.Add (new Product () {
-
-                Name = "Test0",
-                Quantity = 1
+                Name = "Test0"
             });
 
             mStore.Products.Add (new Product () {
-
-                Name = "Test1",
-                Quantity = 0
+                Name = "Test1"
             });
         }
 
@@ -43,7 +41,7 @@ namespace Project0.Test {
             var failProduct = mStore.GetProductByName ("Fail");
 
             Assert.NotNull (testProduct);
-            Assert.Equal (1, testProduct.Quantity);
+            Assert.Equal (1, mStore.ProductQuantity(testProduct.Name));
 
             // Store should have no product named "Fail" in it's listing
             Assert.Null (failProduct);

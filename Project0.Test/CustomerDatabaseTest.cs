@@ -9,11 +9,11 @@ namespace Project0.Test {
 
     public class CustomerDatabaseTest {
 
-        private readonly CustomerDatabase mCustomerDatabase;
+        private readonly CustomerRepository mCustomerDatabase;
 
         public CustomerDatabaseTest () {
 
-            mCustomerDatabase = new CustomerDatabase ("../../../../customers.json");
+            mCustomerDatabase = new CustomerRepository ("../../../../customers.json");
             mCustomerDatabase.LoadItems ();
         }
 

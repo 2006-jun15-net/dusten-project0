@@ -30,7 +30,7 @@ namespace Project0.Main {
         /// if none already exist
         /// </summary>
         /// <param name="customerDb">Database of customers</param>
-        internal void AcceptCustomerName (CustomerDatabase customerDb) {
+        internal void AcceptCustomerName (CustomerRepository customerDb) {
 
             Console.Write ("Please enter your name: ");
 
@@ -67,7 +67,7 @@ namespace Project0.Main {
         /// (defaults to the last store they shopped at)
         /// </summary>
         /// <param name="storeDb">Database of stores</param>
-        internal void AcceptStoreChoice (StoreDatabase storeDb) {
+        internal void AcceptStoreChoice (StoreRepository storeDb) {
 
             var stores = storeDb.FindAll;
             var storeNames = new List<string> ();
@@ -85,7 +85,9 @@ namespace Project0.Main {
 
             if (selectedName.Trim () == "") {
 
-                mCurrentStore = storeDb.FindByID (mCurrentCustomer.ID);
+                mCurrentStore = storeDb.FindByID (mCurrentCustomer.StoreID);
+                Console.WriteLine ($"\nWelcome back to {mCurrentStore.Name}!");
+
                 return;
             }
 
@@ -114,10 +116,17 @@ namespace Project0.Main {
                 selection = storeDb.FindByName (selectedName);
             }
 
-            Console.WriteLine ($"\nWelcome to {selection.Name}!");
-
             mCurrentStore = selection;
-            mCurrentCustomer.StoreID = mCurrentStore.ID;
+
+            if (mCurrentCustomer.StoreID == mCurrentStore.ID) {
+                Console.WriteLine ($"\nWelcome back to {mCurrentStore.Name}!");
+            }
+
+            else {
+
+                Console.WriteLine ($"\nWelcome to {mCurrentStore.Name}!");
+                mCurrentCustomer.StoreID = mCurrentStore.ID;
+            }
         }
 
         /// <summary>
@@ -162,10 +171,23 @@ namespace Project0.Main {
         /// <param name="customerDb">Database of customers</param>
         /// <param name="orderDb">Database of customer orders</param>
         /// <param name="storeDb">Database of stores</param>
-        internal void ListCustomerOrders (CustomerDatabase customerDb, OrderDatabase orderDb, StoreDatabase storeDb) {
+        internal void ListCustomerOrders (OrderRepository orderDb, StoreRepository storeDb) {
 
             var orders = orderDb.FindByCustomer (mCurrentCustomer);
-            ListOrders (orders, mCurrentCustomer.Name, customerDb, storeDb);
+
+            Console.WriteLine ();
+
+            if (orders.Count == 0) {
+
+                Console.WriteLine ($"{mCurrentCustomer.Name} has no orders\n");
+                return;
+            }
+
+            Console.WriteLine ($"Listing orders for customer {mCurrentCustomer.Name}:\n");
+
+            foreach (var order in orders) {
+                order.ShowInfoForStore (storeDb);
+            }
         }
 
         /// <summary>
@@ -174,24 +196,22 @@ namespace Project0.Main {
         /// <param name="customerDb">Database of customers</param>
         /// <param name="orderDb">Database of customer orders</param>
         /// <param name="storeDb">Database of stores</param>
-        internal void ListStoreOrders (CustomerDatabase customerDb, OrderDatabase orderDb, StoreDatabase storeDb) {
+        internal void ListStoreOrders (OrderRepository orderDb, CustomerRepository customerDb) {
 
-            var orders = orderDb.FindByStore (mCurrentStore);
-            ListOrders (orders, mCurrentStore.Name, customerDb, storeDb);
-        }
-
-        private void ListOrders (List<Order> orders, string name, CustomerDatabase customerDb, StoreDatabase storeDb) {
+            var orders = orderDb.FindByCustomer (mCurrentCustomer);
 
             Console.WriteLine ();
 
             if (orders.Count == 0) {
 
-                Console.WriteLine ($"{name} has no orders\n");
+                Console.WriteLine ($"{mCurrentStore.Name} has no orders\n");
                 return;
             }
 
+            Console.WriteLine ($"Listing orders for store {mCurrentStore.Name}:\n");
+
             foreach (var order in orders) {
-                order.ShowInfo (storeDb, customerDb);
+                order.ShowInfoForCustomer (customerDb, mCurrentStore);
             }
         }
 
@@ -200,7 +220,9 @@ namespace Project0.Main {
         /// products in the currently selected store
         /// </summary>
         /// <param name="orderDb">Database of customer orders</param>
-        internal void NewCustomerOrder (OrderDatabase orderDb) {
+        internal void NewCustomerOrder (OrderRepository orderDb) {
+
+            // TODO test
 
             var order = new Order (mCurrentCustomer, mCurrentStore);
 
@@ -208,15 +230,22 @@ namespace Project0.Main {
 
             while (true) {
 
-                Console.Write ("Please choose a product (q to quit, l to relist): ");
-                var input = Console.ReadLine ().ToLower ();
+                Console.Write ("Please choose a product (f to finish, l to relist, p to preview): ");
+                var input = Console.ReadLine ();
 
-                if (input == "q") {
+                if (input.ToLower () == "f") {
                     break;
                 }
 
-                if (input == "l") {
+                if (input.ToLower () == "l") {
                     mCurrentStore.ShowProductStock ();
+                }
+
+                else if (input.ToLower () == "p") {
+
+                    Console.WriteLine ();
+                    order.ShowInfo (mCurrentStore);
+                    Console.WriteLine ();
                 }
 
                 else if (!mCurrentStore.HasProductInStock (input)) {
@@ -228,9 +257,9 @@ namespace Project0.Main {
                     var productFromStore = mCurrentStore.GetProductByName (input);
                     int quantity;
 
-                    Console.Write ("How many: ");
-
                     while (true) {
+
+                        Console.Write ("How many: ");
 
                         if (!int.TryParse(Console.ReadLine (), out quantity)) {
 
@@ -240,7 +269,7 @@ namespace Project0.Main {
 
                         if (quantity > 0) {
                             
-                            if (quantity > productFromStore.Quantity) {
+                            if (quantity > mCurrentStore.ProductQuantity (productFromStore.Name)) {
 
                                 Console.WriteLine ($"Invalid quantity of {productFromStore.Name}");
                                 Console.Write ("How many: ");
@@ -250,12 +279,22 @@ namespace Project0.Main {
                                 break;
                             }
                         }
+                        else {
+                            break;
+                        }
+                    }
+                    
+                    if (!order.AddProduct (mCurrentStore, input, quantity)) {
+                        Console.WriteLine ($"Can't add more than {Order.MAX_PRODUCTS} products to an order");
                     }
 
-                    var product = new Product(productFromStore, quantity);
+                    if (order.ProductCount == Order.MAX_PRODUCTS) {
 
-                    productFromStore.Quantity -= quantity;
-                    order.AddProduct (product);
+                        Console.WriteLine ("Order is now full!");
+                        break;
+                    }
+
+                    Console.WriteLine ($"Order now has {order.ProductCount} products");
                 }
             }
 

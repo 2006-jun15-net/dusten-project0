@@ -4,11 +4,11 @@ using System.Collections.Generic;
 namespace Project0.Business.Database {
 
     /// <summary>
-    /// Mock database containing all Customers' information
+    /// Repository containing all Customers' information
     /// </summary>
-    public class CustomerDatabase : MockDatabase<Customer> {
+    public class CustomerRepository : Repository<Customer> {
 
-        public CustomerDatabase (string jsonFile) : base (jsonFile) { }
+        public CustomerRepository (string jsonFile) : base (jsonFile) { }
 
         public Customer AddCustomer(string firstname, string lastname) {
 

@@ -1,10 +1,12 @@
 ﻿
+using Project0.Business.Behavior;
+
 namespace Project0.Business {
 
     /// <summary>
     /// Product that can be added to an order by a customer
     /// </summary>
-    public class Product {
+    public class Product : ISerialized {
 
         /// <summary>
         /// Name of the product
@@ -17,22 +19,12 @@ namespace Project0.Business {
         public double Price { get; set; }
 
         /// <summary>
-        /// Quantity of the product (either at 
-        /// the store or in a customer order)
+        /// The product's unique ID
         /// </summary>
-        public int Quantity { get; set; }
-
-        public Product () { }
-
-        public Product (Product other, int quantity) {
-
-            Name = other.Name;
-            Price = other.Price;
-            Quantity = quantity;
-        }
+        public ulong ID { get; set; }
 
         public override string ToString () {
-            return $"{Name} - ${Price:#.00} (quantity: {Quantity})";
+            return $"{Name} - ${Price:#.00}";
         }
     }
 }

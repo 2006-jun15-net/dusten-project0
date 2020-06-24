@@ -8,23 +8,26 @@ namespace Project0.Main {
         static void Main (string[] args) {
 #pragma warning restore IDE0060 // Remove unused parameter
 
-            var customerDb = new CustomerDatabase ("../../../../customers.json");
-            var orderDb = new OrderDatabase ("../../../../orders.json");
-            var storeDb = new StoreDatabase ("../../../../stores.json");
-
             // JSON files are stored at the solution's parent directory
             // (this would need to change if running the program by itself)
-            customerDb.LoadItems ();
-            orderDb.LoadItems ();
-            storeDb.LoadItems ();
+            var productRepository = new ProductRepository ("../../../../products.json");
+            productRepository.LoadItems ();
+
+            var customerRepository = new CustomerRepository ("../../../../customers.json");
+            var orderRepository = new OrderRepository ("../../../../orders.json", productRepository);
+            var storeRepository = new StoreRepository ("../../../../stores.json", productRepository);
+
+            customerRepository.LoadItems ();
+            orderRepository.LoadItems ();
+            storeRepository.LoadItems ();
 
             var handler = new IOHandler ();
 
             // Let the customer input their name 
-            handler.AcceptCustomerName (customerDb);
+            handler.AcceptCustomerName (customerRepository);
 
             // Let the customer choose which store to order from
-            handler.AcceptStoreChoice (storeDb);
+            handler.AcceptStoreChoice (storeRepository);
 
             bool running = true;
 
@@ -37,17 +40,17 @@ namespace Project0.Main {
 
                     case IOHandler.Option.LIST_CUSTOMER_ORDERS:
 
-                        handler.ListCustomerOrders (customerDb, orderDb, storeDb);
+                        handler.ListCustomerOrders (orderRepository, storeRepository);
                         break;
 
                     case IOHandler.Option.LIST_STORE_ORDERS:
 
-                        handler.ListStoreOrders (customerDb, orderDb, storeDb);
+                        handler.ListStoreOrders (orderRepository, customerRepository);
                         break;
 
                     case IOHandler.Option.NEW_ORDER:
 
-                        handler.NewCustomerOrder (orderDb);
+                        handler.NewCustomerOrder (orderRepository);
                         break;
 
                     case IOHandler.Option.QUIT:
@@ -60,9 +63,9 @@ namespace Project0.Main {
                 }
             }
 
-            customerDb.SaveItems ();
-            orderDb.SaveItems ();
-            storeDb.SaveItems ();
+            customerRepository.SaveItems ();
+            orderRepository.SaveItems ();
+            storeRepository.SaveItems ();
         }
     }
 }

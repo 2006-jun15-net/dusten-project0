@@ -3,13 +3,14 @@
 using Project0.Business.Database;
 
 namespace Project0.Test {
+
     public class StoreDatabaseTest {
 
-        private readonly StoreDatabase mStoreDatabase;
+        private readonly StoreRepository mStoreDatabase;
 
         public StoreDatabaseTest () {
 
-            mStoreDatabase = new StoreDatabase ("../../../../stores.json");
+            mStoreDatabase = new StoreRepository ("../../../../stores.json");
             mStoreDatabase.LoadItems ();
         }
 
@@ -32,11 +33,11 @@ namespace Project0.Test {
             
             Assert.Equal ("Milk", products[0].Name);
             Assert.Equal (1.5, products[0].Price);
-            Assert.Equal (50, products[0].Quantity);
+            Assert.Equal (50, testStore.ProductQuantity (products[0].Name));
 
             Assert.Equal ("Cheese", products[1].Name);
             Assert.Equal (2.0, products[1].Price);
-            Assert.Equal (50, products[1].Quantity);
+            Assert.Equal (50, testStore.ProductQuantity (products[1].Name));
         }
     }
 }

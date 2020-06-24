@@ -9,22 +9,24 @@ using Project0.Business.Behavior;
 namespace Project0.Business.Database {
 
     /// <summary>
-    /// The base class for any mock database setups
+    /// The base class for any repository setups
     /// </summary>
     /// <typeparam name="T">Any type that implements the "ISerialized" interface</typeparam>
-    public class MockDatabase<T> where T : ISerialized {
+    public class Repository<T> where T : ISerialized {
 
         protected List<T> mItems;
         protected ulong mUuid;
 
-        private readonly string mJsonFile;
+        protected readonly string mJsonFile;
 
-        public MockDatabase (string jsonFile) {
+        public Repository (string jsonFile) {
 
             mItems = new List<T> ();
 
             mJsonFile = jsonFile;
-            mUuid = 0;
+
+            // IDs start at 1
+            mUuid = 1;
         }
 
         /// <summary>
@@ -44,7 +46,7 @@ namespace Project0.Business.Database {
         /// <summary>
         /// Deserializes all items from a JSON file
         /// </summary>
-        public async void LoadItems () {
+        public virtual async void LoadItems () {
 
             string jsonText = await File.ReadAllTextAsync (mJsonFile);
 
@@ -61,7 +63,7 @@ namespace Project0.Business.Database {
         /// <summary>
         /// Serializes all items and saves the resulting JSON text to a file
         /// </summary>
-        public async void SaveItems () {
+        public virtual async void SaveItems () {
 
             string jsonText = JsonConvert.SerializeObject (mItems);
             await File.WriteAllTextAsync (mJsonFile, jsonText);

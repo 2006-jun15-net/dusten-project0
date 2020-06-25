@@ -13,9 +13,14 @@ namespace Project0.Business.Database {
     public class OrderRepository : Repository<Order> {
 
         private readonly ProductRepository mProductRepository;
+        private readonly CustomerRepository mCustomerRepository;
+        private readonly StoreRepository mStoreRepository;
 
-        public OrderRepository (string jsonFile, ProductRepository productRepository) : base (jsonFile) { 
+        public OrderRepository (string jsonFile, ProductRepository productRepository, CustomerRepository customerRepository, StoreRepository storeRepository) : base (jsonFile) { 
+            
             mProductRepository = productRepository;
+            mCustomerRepository = customerRepository;
+            mStoreRepository = storeRepository;
         }
 
         /// <summary>
@@ -38,7 +43,7 @@ namespace Project0.Business.Database {
         public List<Order> FindByCustomer (Customer customer) {
 
             var orders = from item in mItems 
-                        where item.CustomerID == customer.ID 
+                        where item.Customer.ID == customer.ID // TODO overide ==
                         select item;
 
             return orders.ToList ();
@@ -52,7 +57,7 @@ namespace Project0.Business.Database {
         public List<Order> FindByStore (Store store) {
 
             var orders = from item in mItems 
-                        where item.StoreID == store.ID 
+                        where item.Store.ID == store.ID // TODO override ==
                         select item;
 
             return orders.ToList ();
@@ -74,6 +79,9 @@ namespace Project0.Business.Database {
                     p => mProductRepository.FindByID (p)
                     ).ToList ();
 
+                var customer = mCustomerRepository.FindByID (item.CustomerID);
+                var store = mStoreRepository.FindByID (item.StoreID);
+
                 mItems.Add (new Order () {
 
                     Products = products,
@@ -81,8 +89,8 @@ namespace Project0.Business.Database {
                     Quantities = item.Quantities,
                     Timestamp = item.Timestamp,
 
-                    CustomerID = item.CustomerID,
-                    StoreID = item.StoreID,
+                    Customer = customer,
+                    Store = store,
                     ID = item.ID,
                 });
 
@@ -110,8 +118,8 @@ namespace Project0.Business.Database {
                     Quantities = item.Quantities,
                     Timestamp = item.Timestamp,
 
-                    CustomerID = item.CustomerID,
-                    StoreID = item.StoreID,
+                    CustomerID = item.Customer.ID,
+                    StoreID = item.Store.ID,
                     ID = item.ID,
                 });
             }
@@ -129,6 +137,7 @@ namespace Project0.Business.Database {
             public List<int> Quantities;
 
             public DateTime Timestamp;
+
             public ulong CustomerID;
             public ulong StoreID;
             public ulong ID;

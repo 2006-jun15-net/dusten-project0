@@ -10,6 +10,11 @@ namespace Project0.Business {
     public class Customer : ISerialized {
 
         /// <summary>
+        /// Store that the customer is currently ordering from
+        /// </summary>
+        public Store Store { get; set; }
+
+        /// <summary>
         /// The customer's first name
         /// </summary>
         public string Firstname { get; set; }
@@ -22,6 +27,7 @@ namespace Project0.Business {
         /// <summary>
         /// The customer's full name
         /// </summary>
+        /// 
         public string Name {
             get => Firstname + " " + Lastname;
         }
@@ -30,10 +36,5 @@ namespace Project0.Business {
         /// The customer's unique ID
         /// </summary>
         public ulong ID { get; set; }
-
-        /// <summary>
-        /// Store ID that the customer is currently ordering from
-        /// </summary>
-        public ulong StoreID { get; set; }
     }
 }

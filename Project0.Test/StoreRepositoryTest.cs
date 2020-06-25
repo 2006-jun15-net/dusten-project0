@@ -4,20 +4,23 @@ using Project0.Business.Database;
 
 namespace Project0.Test {
 
-    public class StoreDatabaseTest {
+    public class StoreRepositoryTest {
 
-        private readonly StoreRepository mStoreDatabase;
+        private readonly StoreRepository mStoreRepository;
 
-        public StoreDatabaseTest () {
+        public StoreRepositoryTest () {
 
-            mStoreDatabase = new StoreRepository ("../../../../stores.json");
-            mStoreDatabase.LoadItems ();
+            var productRepository = new ProductRepository ("../../../../products.json");
+            productRepository.LoadItems ();
+
+            mStoreRepository = new StoreRepository ("../../../../stores.json", productRepository);
+            mStoreRepository.LoadItems ();
         }
 
         [Fact]
         public void TestLoadFromJsonFile () {
 
-            var testStore = mStoreDatabase.FindByID (0);
+            var testStore = mStoreRepository.FindByID (0);
 
             Assert.Equal ((ulong)0, testStore.ID);
             Assert.Equal ("Milk and Cheese", testStore.Name);
@@ -26,7 +29,7 @@ namespace Project0.Test {
         [Fact]
         public void TestProductsLoaded () {
 
-            var testStore = mStoreDatabase.FindByID (0);
+            var testStore = mStoreRepository.FindByID (0);
             var products = testStore.Products;
 
             Assert.Equal (2, products.Count);

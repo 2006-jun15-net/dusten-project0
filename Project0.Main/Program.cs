@@ -13,13 +13,14 @@ namespace Project0.Main {
             var productRepository = new ProductRepository ("../../../../products.json");
             productRepository.LoadItems ();
 
-            var customerRepository = new CustomerRepository ("../../../../customers.json");
-            var orderRepository = new OrderRepository ("../../../../orders.json", productRepository);
             var storeRepository = new StoreRepository ("../../../../stores.json", productRepository);
-
-            customerRepository.LoadItems ();
-            orderRepository.LoadItems ();
             storeRepository.LoadItems ();
+
+            var customerRepository = new CustomerRepository ("../../../../customers.json", storeRepository);
+            customerRepository.LoadItems ();
+
+            var orderRepository = new OrderRepository ("../../../../orders.json", productRepository, customerRepository, storeRepository);
+            orderRepository.LoadItems ();
 
             var handler = new IOHandler ();
 
@@ -63,6 +64,8 @@ namespace Project0.Main {
                 }
             }
 
+            // Products don't need ot be saved, because product information
+            // doesn't change during this program's runtime
             customerRepository.SaveItems ();
             orderRepository.SaveItems ();
             storeRepository.SaveItems ();

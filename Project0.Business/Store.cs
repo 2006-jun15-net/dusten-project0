@@ -12,6 +12,8 @@ namespace Project0.Business {
     /// </summary>
     public class Store : ISerialized {
 
+        // TODO dictionaries?
+
         /// <summary>
         /// The store's listed products
         /// </summary>
@@ -21,6 +23,8 @@ namespace Project0.Business {
         /// Quantities of each product
         /// </summary>
         public List<int> Quantities { get; set; }
+
+        // END TODO
 
         /// <summary>
         /// The store's name

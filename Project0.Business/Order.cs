@@ -1,5 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
+using System.Collections.Specialized;
 using System.Linq;
 using System.Net.Http.Headers;
 using Project0.Business.Behavior;
@@ -34,14 +35,14 @@ namespace Project0.Business {
         public DateTime Timestamp {  get; set; }
 
         /// <summary>
-        /// ID of the customer who placed the order
+        /// Customer who placed the order
         /// </summary>
-        public ulong CustomerID { get; set; }
+        public Customer Customer { get; set; }
 
         /// <summary>
-        /// ID of the store the order is for
+        /// Store the order was placed at
         /// </summary>
-        public ulong StoreID { get; set; }
+        public Store Store { get; set; }
 
         /// <summary>
         /// The order's unique ID
@@ -60,8 +61,8 @@ namespace Project0.Business {
 
         public Order (Customer customer, Store store) : this () {
 
-            CustomerID = customer.ID;
-            StoreID = store.ID;
+            this.Customer = customer;
+            this.Store = store;
         }
 
         /// <summary>
@@ -71,8 +72,6 @@ namespace Project0.Business {
         /// <param name="product"></param>
         /// <returns>False if the added products went over the order quantity limit</returns>
         public bool AddProduct (Store store, string productName, int quantity) {
-
-            // TODO FIX
 
             if (ProductCount + quantity > MAX_PRODUCTS) {
                 return false;
@@ -96,27 +95,29 @@ namespace Project0.Business {
         /// <summary>
         /// Print all info of an order from a specific customer
         /// </summary>
-        /// <param name="customerName">Customer's name</param>
-        /// <param name="storeDb">Database of stores</param>
-        public void ShowInfoForStore (StoreRepository storeDb) {
+        public void ShowInfoForStore () {
 
-            var store = storeDb.FindByID (StoreID);
-            Console.WriteLine ($"Order #{ID} placed at {store.Name}:\n");
+            Console.WriteLine ($"Order #{ID} placed at {Store.Name}:\n");
 
-            ShowInfo (store);
+            ShowInfo ();
             Console.WriteLine ();
         }
 
-        public void ShowInfoForCustomer (CustomerRepository customerDb, Store store) {
+        /// <summary>
+        /// 
+        /// </summary>
+        public void ShowInfoForCustomer () {
 
-            var customer = customerDb.FindByID (CustomerID);
-            Console.WriteLine ($"Order #{ID} placed by {customer.Name}:\n");
+            Console.WriteLine ($"Order #{ID} placed by {Customer.Name}:\n");
 
-            ShowInfo (store);
+            ShowInfo ();
             Console.WriteLine ();
         }
 
-        public void ShowInfo (Store store) {
+        /// <summary>
+        /// 
+        /// </summary>
+        public void ShowInfo () {
 
             double total = 0.0;
 
@@ -125,7 +126,7 @@ namespace Project0.Business {
                 var product = Products[i];
                 Console.WriteLine ($"\t{i + 1}. {product}");
 
-                total += product.Price * store.ProductQuantity (product.Name);
+                total += product.Price * Store.ProductQuantity (product.Name);
             }
 
             Console.Write($"\n\tOrder total: ${total:#.00}");

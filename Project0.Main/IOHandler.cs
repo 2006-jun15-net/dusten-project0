@@ -29,8 +29,8 @@ namespace Project0.Main {
         /// to find their existing records, or create new records
         /// if none already exist
         /// </summary>
-        /// <param name="customerDb">Database of customers</param>
-        internal void AcceptCustomerName (CustomerRepository customerDb) {
+        /// <param name="customerRepository">Repository of customers</param>
+        internal void AcceptCustomerName (CustomerRepository customerRepository) {
 
             Console.Write ("Please enter your name: ");
 
@@ -43,7 +43,7 @@ namespace Project0.Main {
                 name = Console.ReadLine ();
             }
 
-            var customerFromDb = customerDb.FindByName (name);
+            var customerFromDb = customerRepository.FindByName (name);
 
             if (customerFromDb != default(Customer)) {
 
@@ -58,7 +58,7 @@ namespace Project0.Main {
                 // Guaranteed to have two values because of the Regex matching
                 var firstlast = name.Split (" ");
 
-                mCurrentCustomer = customerDb.AddCustomer (firstlast[0], firstlast[1]);
+                mCurrentCustomer = customerRepository.AddCustomer (firstlast[0], firstlast[1]);
             }
         }
 
@@ -66,10 +66,10 @@ namespace Project0.Main {
         /// Customer chooses which store they want to shop at
         /// (defaults to the last store they shopped at)
         /// </summary>
-        /// <param name="storeDb">Database of stores</param>
-        internal void AcceptStoreChoice (StoreRepository storeDb) {
+        /// <param name="storeRepository">Repository of stores</param>
+        internal void AcceptStoreChoice (StoreRepository storeRepository) {
 
-            var stores = storeDb.FindAll;
+            var stores = storeRepository.FindAll;
             var storeNames = new List<string> ();
 
             Console.WriteLine ("\nStores:");
@@ -80,12 +80,12 @@ namespace Project0.Main {
                 storeNames.Add (store.Name);
             }
 
-            Console.Write ($"\nPlease select a store (default={mCurrentCustomer.StoreID}): ");
+            Console.Write ($"\nPlease select a store (default={mCurrentCustomer.Store.ID}): ");
             var selectedName = Console.ReadLine ();
 
             if (selectedName.Trim () == "") {
 
-                mCurrentStore = storeDb.FindByID (mCurrentCustomer.StoreID);
+                mCurrentStore = mCurrentCustomer.Store;
                 Console.WriteLine ($"\nWelcome back to {mCurrentStore.Name}!");
 
                 return;
@@ -100,7 +100,7 @@ namespace Project0.Main {
                 if (selectByID) {
 
                     try {
-                        selection = storeDb.FindByID (selectedID);
+                        selection = storeRepository.FindByID (selectedID);
                     } catch (Exception) { }
 
                     if (selection != default(Store)) {
@@ -108,24 +108,24 @@ namespace Project0.Main {
                     }
                 }
 
-                Console.Write ($"Please select a store (default={mCurrentCustomer.StoreID}): ");
+                Console.Write ($"Please select a store (default={mCurrentCustomer.Store.ID}): ");
                 selectedName = Console.ReadLine ();
             }
 
             if (selection == default(Store)) {
-                selection = storeDb.FindByName (selectedName);
+                selection = storeRepository.FindByName (selectedName);
             }
 
             mCurrentStore = selection;
 
-            if (mCurrentCustomer.StoreID == mCurrentStore.ID) {
+            if (mCurrentCustomer.Store.ID == mCurrentStore.ID) {
                 Console.WriteLine ($"\nWelcome back to {mCurrentStore.Name}!");
             }
 
             else {
 
                 Console.WriteLine ($"\nWelcome to {mCurrentStore.Name}!");
-                mCurrentCustomer.StoreID = mCurrentStore.ID;
+                mCurrentCustomer.Store = mCurrentStore;
             }
         }
 
@@ -168,12 +168,10 @@ namespace Project0.Main {
         /// <summary>
         /// List all orders for the current customer
         /// </summary>
-        /// <param name="customerDb">Database of customers</param>
-        /// <param name="orderDb">Database of customer orders</param>
-        /// <param name="storeDb">Database of stores</param>
-        internal void ListCustomerOrders (OrderRepository orderDb, StoreRepository storeDb) {
+        /// <param name="orderRepository">Repository of customer orders</param>
+        internal void ListCustomerOrders (OrderRepository orderRepository) {
 
-            var orders = orderDb.FindByCustomer (mCurrentCustomer);
+            var orders = orderRepository.FindByCustomer (mCurrentCustomer);
 
             Console.WriteLine ();
 
@@ -186,19 +184,17 @@ namespace Project0.Main {
             Console.WriteLine ($"Listing orders for customer {mCurrentCustomer.Name}:\n");
 
             foreach (var order in orders) {
-                order.ShowInfoForStore (storeDb);
+                order.ShowInfoForStore ();
             }
         }
 
         /// <summary>
         /// List all orders placed at the current store
         /// </summary>
-        /// <param name="customerDb">Database of customers</param>
-        /// <param name="orderDb">Database of customer orders</param>
-        /// <param name="storeDb">Database of stores</param>
-        internal void ListStoreOrders (OrderRepository orderDb, CustomerRepository customerDb) {
+        /// <param name="orderRepository">Repository of customer orders</param>
+        internal void ListStoreOrders (OrderRepository orderRepository) {
 
-            var orders = orderDb.FindByCustomer (mCurrentCustomer);
+            var orders = orderRepository.FindByCustomer (mCurrentCustomer);
 
             Console.WriteLine ();
 
@@ -211,7 +207,7 @@ namespace Project0.Main {
             Console.WriteLine ($"Listing orders for store {mCurrentStore.Name}:\n");
 
             foreach (var order in orders) {
-                order.ShowInfoForCustomer (customerDb, mCurrentStore);
+                order.ShowInfoForCustomer ();
             }
         }
 
@@ -219,8 +215,8 @@ namespace Project0.Main {
         /// Allow the customer to create a new order by "shopping" for 
         /// products in the currently selected store
         /// </summary>
-        /// <param name="orderDb">Database of customer orders</param>
-        internal void NewCustomerOrder (OrderRepository orderDb) {
+        /// <param name="orderRepository">Repository of customer orders</param>
+        internal void NewCustomerOrder (OrderRepository orderRepository) {
 
             // TODO test
 
@@ -244,7 +240,7 @@ namespace Project0.Main {
                 else if (input.ToLower () == "p") {
 
                     Console.WriteLine ();
-                    order.ShowInfo (mCurrentStore);
+                    order.ShowInfo ();
                     Console.WriteLine ();
                 }
 
@@ -299,7 +295,7 @@ namespace Project0.Main {
             }
 
             order.Finish ();
-            orderDb.AddOrder (order);
+            orderRepository.AddOrder (order);
         }
     }
 }

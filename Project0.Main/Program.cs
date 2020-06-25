@@ -1,4 +1,5 @@
-﻿using Project0.Business.Database;
+﻿using Project0.Business;
+using Project0.Business.Database;
 
 namespace Project0.Main {
 
@@ -11,9 +12,16 @@ namespace Project0.Main {
             // JSON files are stored at the solution's parent directory
             // (this would need to change if running the program by itself)
             var productRepository = new ProductRepository ("../../../../products.json");
+            productRepository.LoadItems (); // Unfortunately, 'LoadItems' always has to be called separately
+
             var storeRepository = new StoreRepository ("../../../../stores.json", productRepository);
+            storeRepository.LoadItems ();
+
             var customerRepository = new CustomerRepository ("../../../../customers.json", storeRepository);
+            customerRepository.LoadItems ();
+
             var orderRepository = new OrderRepository ("../../../../orders.json", productRepository, customerRepository, storeRepository);
+            orderRepository.LoadItems ();
 
             var handler = new IOHandler ();
 

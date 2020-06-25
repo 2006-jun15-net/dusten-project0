@@ -37,7 +37,9 @@ namespace Project0.Business {
         public ulong ID { get; set; }
 
         public Store () {
+
             Products = new List<Product> ();
+            Quantities = new List<int> ();
         }
 
         /// <summary>

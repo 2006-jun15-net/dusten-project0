@@ -14,17 +14,21 @@ namespace Project0.Test {
         public CustomerRepositoryTest () {
 
             var productRepository = new ProductRepository ("../../../../products.json");
+            productRepository.LoadItems ();
+
             var storeRepository = new StoreRepository ("../../../../stores.json", productRepository);
+            storeRepository.LoadItems ();
 
             mCustomerRepository = new CustomerRepository ("../../../../customers.json", storeRepository);
+            mCustomerRepository.LoadItems ();
         }
 
         [Fact]
         public void TestLoadFromJsonFile () {
 
-            var testCustomer = mCustomerRepository.FindByID (0);
+            var testCustomer = mCustomerRepository.FindByID (1);
 
-            Assert.Equal ((ulong)0, testCustomer.Store.ID);
+            Assert.Equal ((ulong)1, testCustomer.Store.ID);
             Assert.Equal ("John", testCustomer.Firstname);
             Assert.Equal ("Smith", testCustomer.Lastname);
         }
@@ -32,7 +36,7 @@ namespace Project0.Test {
         [Fact]
         public void TestFindByName () {
 
-            var testCustomer = mCustomerRepository.FindByID (0);
+            var testCustomer = mCustomerRepository.FindByID (1);
             var testCustomerByName = mCustomerRepository.FindByName ("John Smith");
 
             List<Customer> testCustomerByFirstname = mCustomerRepository.FindByFirstname ("John");

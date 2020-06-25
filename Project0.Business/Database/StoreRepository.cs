@@ -41,7 +41,7 @@ namespace Project0.Business.Database {
         /// <summary>
         /// Deserializes all items from a JSON file
         /// </summary>
-        protected override async void LoadItems () {
+        public override async void LoadItems () {
 
             string jsonText = await File.ReadAllTextAsync (mJsonFile);
 
@@ -51,7 +51,7 @@ namespace Project0.Business.Database {
             foreach (var item in items) {
 
                 List<Product> products = item.Products.Select (
-                    p => mProductRepository.FindByID (p)
+                    p => this.mProductRepository.FindByID (p)
                     ).ToList ();
 
                 mItems.Add (new Store () {
@@ -95,7 +95,7 @@ namespace Project0.Business.Database {
         /// <summary>
         /// 
         /// </summary>
-        private struct RawStoreData {
+        struct RawStoreData {
 
             public List<ulong> Products;
             public List<int> Quantities;

@@ -3,7 +3,7 @@
 namespace Project0.Business.Database {
 
     /// <summary>
-    /// 
+    /// Repository containing all Product instances
     /// </summary>
     public class ProductRepository : Repository<Product> {
 

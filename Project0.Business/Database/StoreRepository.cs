@@ -46,7 +46,6 @@ namespace Project0.Business.Database {
             string jsonText = await File.ReadAllTextAsync (mJsonFile);
 
             var items = JsonConvert.DeserializeObject<List<RawStoreData>> (jsonText);
-            mItems = new List<Store> ();
 
             foreach (var item in items) {
 
@@ -92,9 +91,7 @@ namespace Project0.Business.Database {
             await File.WriteAllTextAsync (mJsonFile, jsonText);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
+        // Used for sanitizing data
         struct RawStoreData {
 
             public List<ulong> Products;

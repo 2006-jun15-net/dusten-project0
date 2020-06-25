@@ -17,6 +17,12 @@ namespace Project0.Business.Database {
             mStoreRepository = storeRepository;
         }
 
+        /// <summary>
+        /// Add a new customer with given firstname and lastname
+        /// </summary>
+        /// <param name="firstname">The new customer's first name</param>
+        /// <param name="lastname">The new customer's last name</param>
+        /// <returns>Newly registered customer</returns>
         public Customer AddCustomer(string firstname, string lastname) {
 
             mUuid += 1;
@@ -85,7 +91,6 @@ namespace Project0.Business.Database {
             string jsonText = await File.ReadAllTextAsync (mJsonFile);
 
             var items = JsonConvert.DeserializeObject<List<RawCustomerData>> (jsonText);
-            mItems = new List<Customer> ();
 
             foreach (var item in items) {
 
@@ -127,6 +132,7 @@ namespace Project0.Business.Database {
             await File.WriteAllTextAsync (mJsonFile, jsonText);
         }
 
+        // Used for sanitizing data
         private struct RawCustomerData {
 
             public string Firstname;

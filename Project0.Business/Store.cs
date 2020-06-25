@@ -12,19 +12,15 @@ namespace Project0.Business {
     /// </summary>
     public class Store : ISerialized {
 
-        // TODO dictionaries?
-
         /// <summary>
         /// The store's listed products
         /// </summary>
-        public List<Product> Products { get; set; }
+        public List<Product> Products { get; set; } = new List<Product> ();
 
         /// <summary>
         /// Quantities of each product
         /// </summary>
-        public List<int> Quantities { get; set; }
-
-        // END TODO
+        public List<int> Quantities { get; set; } = new List<int> ();
 
         /// <summary>
         /// The store's name
@@ -36,11 +32,7 @@ namespace Project0.Business {
         /// </summary>
         public ulong ID { get; set; }
 
-        public Store () {
-
-            Products = new List<Product> ();
-            Quantities = new List<int> ();
-        }
+        public Store () {}
 
         /// <summary>
         /// Show products that are available for customer purchase
@@ -65,10 +57,10 @@ namespace Project0.Business {
         }
 
         /// <summary>
-        /// 
+        /// Find the quantity of the product with matching name
         /// </summary>
-        /// <param name="name"></param>
-        /// <returns></returns>
+        /// <param name="name">Name of the product</param>
+        /// <returns>Quantity of the product available in stock</returns>
         public int ProductQuantity (string name) {
 
             var zipped = Products.Zip (Quantities);
@@ -84,15 +76,15 @@ namespace Project0.Business {
         }
 
         /// <summary>
-        /// 
+        /// Removes a certain number of a product from stock
         /// </summary>
-        /// <param name="productName"></param>
-        /// <param name="quantity"></param>
-        internal void RemoveProduct (string productName, int quantity) {
+        /// <param name="name">Name of the product</param>
+        /// <param name="quantity">Quantity to remove</param>
+        internal void RemoveProduct (string name, int quantity) {
             
             for (int i = 0; i < Products.Count; i ++) {
 
-                if (Products[i].Name == productName) {
+                if (Products[i].Name == name) {
 
                     Quantities[i] -= quantity;
                     break;
@@ -106,17 +98,7 @@ namespace Project0.Business {
         /// <param name="name">Name of the product</param>
         /// <returns>True if the product is in stock</returns>
         public bool HasProductInStock (string name) {
-
-            var zipped = Products.Zip (Quantities);
-
-            foreach (var (product, quantity) in zipped) {
-
-                if (product.Name == name) {
-                    return quantity > 0;
-                }
-            }
-
-            return false;
+            return ProductQuantity (name) > 0;
         }
 
         /// <summary>

@@ -24,9 +24,9 @@ namespace Project0.Business.Database {
         }
 
         /// <summary>
-        /// Adds an order to the database
+        /// Adds a finalized order to the repository
         /// </summary>
-        /// <param name="order"></param>
+        /// <param name="order">Order to be added</param>
         public void AddOrder (Order order) {
 
             mUuid += 1;
@@ -71,13 +71,10 @@ namespace Project0.Business.Database {
             string jsonText = await File.ReadAllTextAsync (mJsonFile);
 
             var items = JsonConvert.DeserializeObject<List<RawOrderData>> (jsonText);
-            mItems = new List<Order> ();
 
             foreach (var item in items) {
 
-                List<Product> products = item.Products.Select (
-                    p => mProductRepository.FindByID (p)
-                    ).ToList ();
+                List<Product> products = item.Products.Select (p => mProductRepository.FindByID (p)).ToList ();
 
                 var customer = mCustomerRepository.FindByID (item.CustomerID);
                 var store = mStoreRepository.FindByID (item.StoreID);
@@ -128,9 +125,7 @@ namespace Project0.Business.Database {
             await File.WriteAllTextAsync (mJsonFile, jsonText);
         }
 
-        /// <summary>
-        /// 
-        /// </summary>
+        // Used for sanitizing data
         private struct RawOrderData {
 
             public List<ulong> Products;

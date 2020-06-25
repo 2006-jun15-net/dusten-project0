@@ -1,10 +1,8 @@
 ﻿using System;
-using System.Collections.Generic;
-using System.Collections.Specialized;
 using System.Linq;
-using System.Net.Http.Headers;
+using System.Collections.Generic;
+
 using Project0.Business.Behavior;
-using Project0.Business.Database;
 
 namespace Project0.Business {
 
@@ -22,12 +20,12 @@ namespace Project0.Business {
         /// Products added to the order by the customer
         /// </summary>
         /// 
-        public List<Product> Products { get; set; }
+        public List<Product> Products { get; set; } = new List<Product> ();
 
         /// <summary>
         /// Quantity of each product in the order
         /// </summary>
-        public List<int> Quantities { get; set; }
+        public List<int> Quantities { get; set; } = new List<int> ();
 
         /// <summary>
         /// Time when the order was placed (set after customer finished adding products)
@@ -53,11 +51,7 @@ namespace Project0.Business {
             get => Quantities.Sum (); 
         }
 
-        public Order () { 
-
-            Products = new List<Product> ();
-            Quantities = new List<int> ();
-        }
+        public Order () {}
 
         public Order (Customer customer, Store store) : this () {
 
@@ -86,14 +80,14 @@ namespace Project0.Business {
         }
 
         /// <summary>
-        /// FInalize the order w/ timestamp
+        /// Finalize the order w/ timestamp
         /// </summary>
         public void Finish () {
             Timestamp = DateTime.Now;
         }
 
         /// <summary>
-        /// Print all info of an order from a specific customer
+        /// Print all info of the order from it's specified store
         /// </summary>
         public void ShowInfoForStore () {
 
@@ -104,7 +98,7 @@ namespace Project0.Business {
         }
 
         /// <summary>
-        /// 
+        /// Print all info of the order from it's specified customer
         /// </summary>
         public void ShowInfoForCustomer () {
 
@@ -115,7 +109,7 @@ namespace Project0.Business {
         }
 
         /// <summary>
-        /// 
+        /// Print all info for the order
         /// </summary>
         public void ShowInfo () {
 

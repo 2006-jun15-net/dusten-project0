@@ -10,6 +10,7 @@ namespace Project0.Test {
 
         public StoreTest () {
 
+            // Test0 is in stock, Test1 is out of stock
             mStore = new Store () {
                 Quantities = {1, 0}
             };

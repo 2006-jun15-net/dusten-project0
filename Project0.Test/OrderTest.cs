@@ -22,6 +22,7 @@ namespace Project0.Test {
 
             var testOrder = new Order ();
 
+            // Add more products than the order can handle
             bool productsCanBeAdded = testOrder.AddProduct (mStore, "Test", 21);
 
             Assert.False (productsCanBeAdded);

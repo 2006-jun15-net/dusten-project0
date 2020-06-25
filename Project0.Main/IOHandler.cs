@@ -7,9 +7,6 @@ using Project0.Business;
 using Project0.Business.Database;
 
 namespace Project0.Main {
-    
-    // TODO add '=' buffers before and after 'welcome' messages
-    // TODO typos
 
     /// <summary>
     /// Handles the I/O and validation for interactions
@@ -45,19 +42,20 @@ namespace Project0.Main {
 
             var customerFromDb = customerRepository.FindByName (name);
 
+            // Customer already exists
             if (customerFromDb != default(Customer)) {
 
                 Console.WriteLine ($"\nWelcome back, {name}!");
                 mCurrentCustomer = customerFromDb;
             }
 
+            // New cutomer
             else {
 
                 Console.WriteLine ($"\nWelcome, {name}!");
 
                 // Guaranteed to have two values because of the Regex matching
                 var firstlast = name.Split (" ");
-
                 mCurrentCustomer = customerRepository.AddCustomer (firstlast[0], firstlast[1]);
             }
         }
@@ -118,10 +116,12 @@ namespace Project0.Main {
 
             mCurrentStore = selection;
 
+            // Same store the customer visited previously
             if (mCurrentCustomer.Store.ID == mCurrentStore.ID) {
                 Console.WriteLine ($"\nWelcome back to {mCurrentStore.Name}!");
             }
 
+            // Different store from previous visit
             else {
 
                 Console.WriteLine ($"\nWelcome to {mCurrentStore.Name}!");
@@ -194,7 +194,7 @@ namespace Project0.Main {
         /// <param name="orderRepository">Repository of customer orders</param>
         internal void ListStoreOrders (OrderRepository orderRepository) {
 
-            var orders = orderRepository.FindByCustomer (mCurrentCustomer);
+            var orders = orderRepository.FindByStore (mCurrentStore);
 
             Console.WriteLine ();
 
@@ -217,8 +217,6 @@ namespace Project0.Main {
         /// </summary>
         /// <param name="orderRepository">Repository of customer orders</param>
         internal void NewCustomerOrder (OrderRepository orderRepository) {
-
-            // TODO test
 
             var order = new Order (mCurrentCustomer, mCurrentStore);
 
@@ -269,13 +267,12 @@ namespace Project0.Main {
 
                                 Console.WriteLine ($"Invalid quantity of {productFromStore.Name}");
                                 Console.Write ("How many: ");
+
+                                continue;
                             }
 
-                            else {
-                                break;
-                            }
-                        }
-                        else {
+                            // Loop only ends when a valid quantity has been entered
+                            // (0 < quantity < availble stock in store)
                             break;
                         }
                     }

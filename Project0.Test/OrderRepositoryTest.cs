@@ -12,16 +12,10 @@ namespace Project0.Test {
         public OrderRepositoryTest () {
 
             var productRepository = new ProductRepository ("../../../../products.json");
-            productRepository.LoadItems ();
-
             var storeRepository = new StoreRepository ("../../../../stores.json", productRepository);
-            storeRepository.LoadItems ();
-
             var customerRepository = new CustomerRepository ("../../../../customers.json", storeRepository);
-            customerRepository.LoadItems ();
 
             mOrderRepository = new OrderRepository ("../../../../orders.json", productRepository, customerRepository, storeRepository);
-            mOrderRepository.LoadItems ();
         }
 
         [Fact]

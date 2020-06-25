@@ -24,6 +24,7 @@ namespace Project0.Business.Database {
             mItems = new List<T> ();
 
             mJsonFile = jsonFile;
+            LoadItems ();
 
             // IDs start at 1
             mUuid = 1;
@@ -46,7 +47,7 @@ namespace Project0.Business.Database {
         /// <summary>
         /// Deserializes all items from a JSON file
         /// </summary>
-        public virtual async void LoadItems () {
+        protected virtual async void LoadItems () {
 
             string jsonText = await File.ReadAllTextAsync (mJsonFile);
 

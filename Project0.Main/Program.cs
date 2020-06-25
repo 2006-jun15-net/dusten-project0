@@ -11,16 +11,9 @@ namespace Project0.Main {
             // JSON files are stored at the solution's parent directory
             // (this would need to change if running the program by itself)
             var productRepository = new ProductRepository ("../../../../products.json");
-            productRepository.LoadItems ();
-
             var storeRepository = new StoreRepository ("../../../../stores.json", productRepository);
-            storeRepository.LoadItems ();
-
             var customerRepository = new CustomerRepository ("../../../../customers.json", storeRepository);
-            customerRepository.LoadItems ();
-
             var orderRepository = new OrderRepository ("../../../../orders.json", productRepository, customerRepository, storeRepository);
-            orderRepository.LoadItems ();
 
             var handler = new IOHandler ();
 
@@ -41,12 +34,12 @@ namespace Project0.Main {
 
                     case IOHandler.Option.LIST_CUSTOMER_ORDERS:
 
-                        handler.ListCustomerOrders (orderRepository, storeRepository);
+                        handler.ListCustomerOrders (orderRepository);
                         break;
 
                     case IOHandler.Option.LIST_STORE_ORDERS:
 
-                        handler.ListStoreOrders (orderRepository, customerRepository);
+                        handler.ListStoreOrders (orderRepository);
                         break;
 
                     case IOHandler.Option.NEW_ORDER:

@@ -41,7 +41,7 @@ namespace Project0.Business.Database {
         /// <summary>
         /// Deserializes all items from a JSON file
         /// </summary>
-        public override async void LoadItems () {
+        protected override async void LoadItems () {
 
             string jsonText = await File.ReadAllTextAsync (mJsonFile);
 

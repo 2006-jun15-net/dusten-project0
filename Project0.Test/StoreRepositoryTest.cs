@@ -11,10 +11,8 @@ namespace Project0.Test {
         public StoreRepositoryTest () {
 
             var productRepository = new ProductRepository ("../../../../products.json");
-            productRepository.LoadItems ();
 
             mStoreRepository = new StoreRepository ("../../../../stores.json", productRepository);
-            mStoreRepository.LoadItems ();
         }
 
         [Fact]

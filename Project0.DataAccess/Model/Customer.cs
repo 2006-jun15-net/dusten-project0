@@ -1,5 +1,4 @@
-﻿using System;
-using System.Collections.Generic;
+﻿using System.Collections.Generic;
 
 namespace Project0.DataAccess.Model
 {
@@ -17,5 +16,12 @@ namespace Project0.DataAccess.Model
 
         public virtual Store Store { get; set; }
         public virtual ICollection<CustomerOrder> CustomerOrder { get; set; }
+    }
+
+    public partial class Customer : IModel {
+
+        public string Name {
+            get => Firstname + " " + Lastname;
+        }
     }
 }

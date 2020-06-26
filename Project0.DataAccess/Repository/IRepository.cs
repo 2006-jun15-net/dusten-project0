@@ -6,6 +6,7 @@ namespace Project0.DataAccess.Repository {
 
     interface IRepository<T> where T : IModel {
 
-        List<T> FindById (int id);
+        List<T> FindAll ();
+        T FindById (int id);
     }
 }

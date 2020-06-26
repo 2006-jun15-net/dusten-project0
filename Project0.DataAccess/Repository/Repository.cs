@@ -1,6 +1,5 @@
-﻿using System.Collections.Generic;
-using Microsoft.EntityFrameworkCore;
-using Project0.Business.Behavior;
+﻿using Microsoft.EntityFrameworkCore;
+
 using Project0.DataAccess.Model;
 
 namespace Project0.DataAccess.Repository {

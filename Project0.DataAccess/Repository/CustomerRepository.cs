@@ -12,11 +12,52 @@ namespace Project0.DataAccess.Repository {
         public CustomerRepository (DbContextOptions<Project0Context> options) 
             : base (options) { }
 
-        public List<Customer> FindById (int id) {
+        public List<Customer> FindAll () {
+            
+            using var context = new Project0Context (mOptions);
+            return context.Customer.ToList ();
+        }
+
+        public Customer FindById (int id) {
+
+            using var context = new Project0Context (mOptions);
+            return context.Customer.Where (c => c.Id == id).FirstOrDefault ();
+        }
+
+        public void AddCustomer (string firstname, string lastname) {
+
+            var customer = new Customer {
+
+                Firstname = firstname,
+                Lastname = lastname
+            };
 
             using var context = new Project0Context(mOptions);
-            return context.Customer.ToList ();
+            context.Customer.Add (customer);
+        }
 
+        public void DeleteCustomer (Customer customer) {
+
+            using var context = new Project0Context(mOptions);
+            context.Customer.Remove (customer);
+        }
+
+        public List<Customer> FindByFirstname (string firstname) {
+
+            using var context = new Project0Context(mOptions);
+            return context.Customer.Where (c => c.Firstname == firstname).ToList ();
+        }
+
+        public List<Customer> FindByLastname (string lastname) {
+
+            using var context = new Project0Context(mOptions);
+            return context.Customer.Where (c => c.Lastname == lastname).ToList ();
+        }
+
+        public List<Customer> FindByName (string name) {
+
+            using var context = new Project0Context(mOptions);
+            return context.Customer.Where (c => c.Name == name).ToList ();
         }
     }
 }

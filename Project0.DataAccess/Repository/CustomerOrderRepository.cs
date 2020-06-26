@@ -9,14 +9,17 @@ namespace Project0.DataAccess.Repository {
 
     public class CustomerOrderRepository : Repository, IRepository<CustomerOrder> {
 
+        public List<CustomerOrder> FindAll {
+            
+            get {
+
+                using var context = new Project0Context (mOptions);
+                return context.CustomerOrder.ToList ();
+            }
+        }
+
         public CustomerOrderRepository (DbContextOptions<Project0Context> options) 
             : base (options) { }
-
-        public List<CustomerOrder> FindAll () {
-            
-            using var context = new Project0Context (mOptions);
-            return context.CustomerOrder.ToList ();
-        }
 
         public CustomerOrder FindById (int id) {
 

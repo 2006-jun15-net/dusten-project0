@@ -9,14 +9,17 @@ namespace Project0.DataAccess.Repository {
 
     public class CustomerRepository : Repository, IRepository<Customer> {
 
+        public List<Customer> FindAll {
+            
+            get {
+
+                using var context = new Project0Context (mOptions);
+                return context.Customer.ToList ();
+            } 
+        }
+
         public CustomerRepository (DbContextOptions<Project0Context> options) 
             : base (options) { }
-
-        public List<Customer> FindAll () {
-            
-            using var context = new Project0Context (mOptions);
-            return context.Customer.ToList ();
-        }
 
         public Customer FindById (int id) {
 
@@ -24,7 +27,7 @@ namespace Project0.DataAccess.Repository {
             return context.Customer.Where (c => c.Id == id).FirstOrDefault ();
         }
 
-        public void AddCustomer (string firstname, string lastname) {
+        public Customer AddCustomer (string firstname, string lastname) {
 
             var customer = new Customer {
 
@@ -32,8 +35,20 @@ namespace Project0.DataAccess.Repository {
                 Lastname = lastname
             };
 
-            using var context = new Project0Context(mOptions);
+            using var context = new Project0Context (mOptions);
             context.Customer.Add (customer);
+
+            return customer;
+        }
+
+        public void UpdateStoreId (int customerId, int storeId) {
+
+            using var context = new Project0Context (mOptions);
+
+            var exisitingCustomer = context.Customer.Where (c => c.Id == customerId).First ();
+            exisitingCustomer.StoreId = storeId;
+
+            context.SaveChanges ();
         }
 
         public void DeleteCustomer (Customer customer) {
@@ -54,10 +69,10 @@ namespace Project0.DataAccess.Repository {
             return context.Customer.Where (c => c.Lastname == lastname).ToList ();
         }
 
-        public List<Customer> FindByName (string name) {
+        public Customer FindByName (string name) {
 
             using var context = new Project0Context(mOptions);
-            return context.Customer.Where (c => c.Name == name).ToList ();
+            return context.Customer.Where (c => c.Name == name).FirstOrDefault ();
         }
     }
 }

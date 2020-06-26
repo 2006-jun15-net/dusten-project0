@@ -1,4 +1,5 @@
-﻿using System.Linq;
+﻿using System;
+using System.Linq;
 using System.Collections.Generic;
 
 using Microsoft.EntityFrameworkCore;
@@ -9,14 +10,17 @@ namespace Project0.DataAccess.Repository {
 
     public class StoreRepository : Repository, IRepository<Store> {
 
+        public List<Store> FindAll {
+            
+            get {
+
+                using var context = new Project0Context (mOptions);
+                return context.Store.ToList ();
+            }
+        }
+
         public StoreRepository (DbContextOptions<Project0Context> options) 
             : base (options) { }
-
-        public List<Store> FindAll () {
-            
-            using var context = new Project0Context (mOptions);
-            return context.Store.ToList ();
-        }
 
         public Store FindById (int id) {
 
@@ -28,6 +32,26 @@ namespace Project0.DataAccess.Repository {
 
             using var context = new Project0Context (mOptions);
             return context.Store.Where (s => s.Name == name).FirstOrDefault ();
+        }
+
+        public Product FindProductByName (Store store, string name) {
+
+            using var context = new Project0Context (mOptions);
+
+            var foundProduct = default(Product);
+
+            try {
+
+                var stock = context.Store.Select (s => s.StoreStock).First ();
+                var product = context.Product.Where (p => p.Name == name).First ();
+
+                var stockedProduct = stock.Where (s => s.Product == product && s.Store == store).First ();
+
+                foundProduct = context.Product.Where (p => p == stockedProduct.Product).FirstOrDefault ();
+
+            } catch (Exception) {}
+
+            return foundProduct;
         }
     }
 }

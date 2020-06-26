@@ -3,6 +3,9 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
+using Project0.DataAccess.Model;
+using Project0.DataAccess.Repository;
+
 namespace Project0.Main {
 
     /// <summary>
@@ -11,7 +14,7 @@ namespace Project0.Main {
     /// </summary>
     internal class IOHandler {
 
-        /*private Customer mCurrentCustomer;
+        private Customer mCurrentCustomer;
         private Store mCurrentStore;
 
         internal enum Option {
@@ -62,49 +65,45 @@ namespace Project0.Main {
         /// (defaults to the last store they shopped at)
         /// </summary>
         /// <param name="storeRepository">Repository of stores</param>
-        internal void AcceptStoreChoice (StoreRepository storeRepository) {
+        /// <param name="customerRepository">Repository of customer</param>
+        internal void AcceptStoreChoice (StoreRepository storeRepository, CustomerRepository customerRepository) {
 
             var stores = storeRepository.FindAll;
-            var storeNames = new List<string> ();
+            var storeNames = stores.Select (s => s.Name);
 
             Console.WriteLine ("\nStores:");
 
             foreach (var store in stores) {
-
-                Console.WriteLine ($"\t{store.ID}: {store.Name}");
-                storeNames.Add (store.Name);
-            }
-
-            Console.Write ($"\nPlease select a store (default={mCurrentCustomer.Store.ID}): ");
-            var selectedName = Console.ReadLine ();
-
-            if (selectedName.Trim () == "") {
-
-                mCurrentStore = mCurrentCustomer.Store;
-                Console.WriteLine ($"\nWelcome back to {mCurrentStore.Name}!");
-
-                return;
+                Console.WriteLine ($"\t{store.Id}: {store.Name}");
             }
 
             Store selection = default;
+            string selectedName = default;
 
             while (!storeNames.Contains(selectedName)) {
 
-                bool selectByID = ulong.TryParse (selectedName, out ulong selectedID);
+                selectedName = UserSelection ();
+
+                if (mCurrentCustomer.StoreId != null && selectedName.Trim () == "") {
+
+                    mCurrentStore = mCurrentCustomer.Store;
+                    Console.WriteLine ($"\nWelcome back to {mCurrentStore.Name}!");
+
+                    return;
+                }
+
+                bool selectByID = int.TryParse (selectedName, out int selectedID);
 
                 if (selectByID) {
 
                     try {
-                        selection = storeRepository.FindByID (selectedID);
+                        selection = storeRepository.FindById (selectedID);
                     } catch (Exception) { }
 
                     if (selection != default(Store)) {
                         break;
                     }
                 }
-
-                Console.Write ($"Please select a store (default={mCurrentCustomer.Store.ID}): ");
-                selectedName = Console.ReadLine ();
             }
 
             if (selection == default(Store)) {
@@ -114,7 +113,7 @@ namespace Project0.Main {
             mCurrentStore = selection;
 
             // Same store the customer visited previously
-            if (mCurrentCustomer.Store.ID == mCurrentStore.ID) {
+            if (mCurrentCustomer.StoreId == mCurrentStore.Id) {
                 Console.WriteLine ($"\nWelcome back to {mCurrentStore.Name}!");
             }
 
@@ -122,10 +121,25 @@ namespace Project0.Main {
             else {
 
                 Console.WriteLine ($"\nWelcome to {mCurrentStore.Name}!");
-                mCurrentCustomer.Store = mCurrentStore;
+                customerRepository.UpdateStoreId (mCurrentCustomer.Id, mCurrentStore.Id);
             }
         }
 
+        private string UserSelection () {
+
+            // New customer
+            if (mCurrentCustomer.StoreId == null) {
+                Console.Write ($"\nPlease select a store: ");
+            }
+
+            // Customer has a previously visited store
+            else {
+                Console.Write ($"\nPlease select a store (default={mCurrentCustomer.StoreId}): ");
+            }
+
+            return Console.ReadLine ();
+        }
+        
         /// <summary>
         /// The customer can choose to list their current orders,
         /// start a new order, or quit the application
@@ -133,7 +147,7 @@ namespace Project0.Main {
         /// <returns>An Option based on the user's input</returns>
         internal Option AcceptCustomerOption () {
             
-            char input = ' ';
+            char input = default;
             var inputReg = @"^[lsnq]";
 
             Console.WriteLine ();
@@ -166,7 +180,7 @@ namespace Project0.Main {
         /// List all orders for the current customer
         /// </summary>
         /// <param name="orderRepository">Repository of customer orders</param>
-        internal void ListCustomerOrders (OrderRepository orderRepository) {
+        internal void ListCustomerOrders (CustomerOrderRepository orderRepository) {
 
             var orders = orderRepository.FindByCustomer (mCurrentCustomer);
 
@@ -189,7 +203,7 @@ namespace Project0.Main {
         /// List all orders placed at the current store
         /// </summary>
         /// <param name="orderRepository">Repository of customer orders</param>
-        internal void ListStoreOrders (OrderRepository orderRepository) {
+        internal void ListStoreOrders (CustomerOrderRepository orderRepository) {
 
             var orders = orderRepository.FindByStore (mCurrentStore);
 
@@ -207,7 +221,7 @@ namespace Project0.Main {
                 order.ShowInfoForCustomer ();
             }
         }
-
+        /*
         /// <summary>
         /// Allow the customer to create a new order by "shopping" for 
         /// products in the currently selected store

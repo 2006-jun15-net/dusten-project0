@@ -1,4 +1,11 @@
-﻿namespace Project0.Main {
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+
+using Project0.DataAccess;
+using Project0.DataAccess.Model;
+using Project0.DataAccess.Repository;
+
+namespace Project0.Main {
 
     class Program {
 
@@ -6,13 +13,25 @@
         static void Main (string[] args) {
 #pragma warning restore IDE0060 // Remove unused parameter
 
-            /*var handler = new IOHandler ();
+            ILoggerFactory MyLoggerFactory = LoggerFactory.Create (builder => { builder.AddConsole (); });
+
+            string connectionString = ConnectionString.mConnectionString;
+
+            DbContextOptions<Project0Context> options = new DbContextOptionsBuilder<Project0Context> ()
+                .UseLoggerFactory (MyLoggerFactory)
+                .UseSqlServer (connectionString)
+                .Options;
+
+            var handler = new IOHandler ();
+
+            var storeRepository = new StoreRepository (options);
+            var customerRepository = new CustomerRepository (options);
 
             // Let the customer input their name 
             handler.AcceptCustomerName (customerRepository);
 
             // Let the customer choose which store to order from
-            handler.AcceptStoreChoice (storeRepository);
+            handler.AcceptStoreChoice (storeRepository, customerRepository);
 
             bool running = true;
 
@@ -25,17 +44,17 @@
 
                     case IOHandler.Option.LIST_CUSTOMER_ORDERS:
 
-                        handler.ListCustomerOrders (orderRepository);
+                        // handler.ListCustomerOrders (orderRepository);
                         break;
 
                     case IOHandler.Option.LIST_STORE_ORDERS:
 
-                        handler.ListStoreOrders (orderRepository);
+                        // handler.ListStoreOrders (orderRepository);
                         break;
 
                     case IOHandler.Option.NEW_ORDER:
 
-                        handler.NewCustomerOrder (orderRepository);
+                        // handler.NewCustomerOrder (orderRepository);
                         break;
 
                     case IOHandler.Option.QUIT:
@@ -47,12 +66,6 @@
                         break;
                 }
             }
-
-            // Products don't need ot be saved, because product information
-            // doesn't change during this program's runtime
-            customerRepository.SaveItems ();
-            orderRepository.SaveItems ();
-            storeRepository.SaveItems ();*/
         }
     }
 }

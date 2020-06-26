@@ -1,7 +1,4 @@
-﻿using Project0.Business;
-using Project0.Business.Database;
-
-namespace Project0.Main {
+﻿namespace Project0.Main {
 
     class Program {
 
@@ -9,21 +6,7 @@ namespace Project0.Main {
         static void Main (string[] args) {
 #pragma warning restore IDE0060 // Remove unused parameter
 
-            // JSON files are stored at the solution's parent directory
-            // (this would need to change if running the program by itself)
-            var productRepository = new ProductRepository ("../../../../products.json");
-            productRepository.LoadItems (); // Unfortunately, 'LoadItems' always has to be called separately
-
-            var storeRepository = new StoreRepository ("../../../../stores.json", productRepository);
-            storeRepository.LoadItems ();
-
-            var customerRepository = new CustomerRepository ("../../../../customers.json", storeRepository);
-            customerRepository.LoadItems ();
-
-            var orderRepository = new OrderRepository ("../../../../orders.json", productRepository, customerRepository, storeRepository);
-            orderRepository.LoadItems ();
-
-            var handler = new IOHandler ();
+            /*var handler = new IOHandler ();
 
             // Let the customer input their name 
             handler.AcceptCustomerName (customerRepository);
@@ -69,7 +52,7 @@ namespace Project0.Main {
             // doesn't change during this program's runtime
             customerRepository.SaveItems ();
             orderRepository.SaveItems ();
-            storeRepository.SaveItems ();
+            storeRepository.SaveItems ();*/
         }
     }
 }

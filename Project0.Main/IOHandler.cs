@@ -3,9 +3,6 @@ using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
-using Project0.Business;
-using Project0.Business.Database;
-
 namespace Project0.Main {
 
     /// <summary>
@@ -14,7 +11,7 @@ namespace Project0.Main {
     /// </summary>
     internal class IOHandler {
 
-        private Customer mCurrentCustomer;
+        /*private Customer mCurrentCustomer;
         private Store mCurrentStore;
 
         internal enum Option {
@@ -293,6 +290,6 @@ namespace Project0.Main {
 
             order.Finish ();
             orderRepository.AddOrder (order);
-        }
+        }*/
     }
 }

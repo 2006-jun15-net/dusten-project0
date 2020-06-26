@@ -51,6 +51,34 @@ CREATE TABLE Business.OrderLine (
 	CONSTRAINT PK_OrderLine_Id PRIMARY KEY (Id)
 );
 
+ALTER TABLE Business.Customer
+	ADD CONSTRAINT FK_Customer_Store_StoreId FOREIGN KEY (StoreId) 
+	REFERENCES Business.Store (Id);
+
+ALTER TABLE Business.CustomerOrder
+	ADD CONSTRAINT FK_CustomerOrder_Customer_CustomerId FOREIGN KEY (CustomerId)
+	REFERENCES Business.Customer (Id);
+
+ALTER TABLE Business.CustomerOrder
+	ADD CONSTRAINT FK_CustomerOrder_Store_StoreId FOREIGN KEY (StoreId)
+	REFERENCES Business.Store (Id);
+
+ALTER TABLE Business.StoreStock 
+	ADD CONSTRAINT FK_StoreStock_Store_StoreId FOREIGN KEY (StoreId)
+	REFERENCES Business.Store (Id);
+
+ALTER TABLE Business.StoreStock
+	ADD CONSTRAINT FK_StoreStock_Product_ProductId FOREIGN KEY (ProductId)
+	REFERENCES Business.Product (Id);
+
+ALTER TABLE Business.OrderLine 
+	ADD CONSTRAINT FK_OrderLine_CustomerOrder_OrderId FOREIGN KEY (OrderId)
+	REFERENCES Business.CustomerOrder (Id);
+
+ALTER TABLE Business.OrderLine
+	ADD CONSTRAINT FK_OrderLine_Product_ProductId FOREIGN KEY (ProductId)
+	REFERENCES Business.Product (Id);
+
 GO
 CREATE TRIGGER Business.OnCustomerDelete ON Business.Customer
 FOR DELETE

@@ -27,18 +27,12 @@ namespace Project0.DataAccess.Repository {
             return context.Customer.Where (c => c.Id == id).FirstOrDefault ();
         }
 
-        public Customer AddCustomer (string firstname, string lastname) {
-
-            var customer = new Customer {
-
-                Firstname = firstname,
-                Lastname = lastname
-            };
+        public void Add (Customer customer) {
 
             using var context = new Project0Context (mOptions);
-            context.Customer.Add (customer);
 
-            return customer;
+            context.Customer.Add (customer);
+            context.SaveChanges ();
         }
 
         public void UpdateStoreId (int customerId, int storeId) {

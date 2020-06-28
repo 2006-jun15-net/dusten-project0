@@ -21,6 +21,8 @@ namespace Project0.DataAccess.Model
 
     public partial class CustomerOrder : IModel {
 
+        public const int MAX_PRODUCTS = 20;
+
         public void ShowInfoForStore () {
 
             Console.WriteLine ($"Order #{Id} placed at {Store.Name}:\n");

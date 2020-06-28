@@ -19,4 +19,18 @@ namespace Project0.DataAccess.Model
         public virtual ICollection<CustomerOrder> CustomerOrder { get; set; }
         public virtual ICollection<StoreStock> StoreStock { get; set; }
     }
+
+    public partial class Store : IModel {
+
+        public void ShowProductStock () {
+
+            Console.WriteLine ($"Products for {Name}:");
+
+            foreach (var stock in StoreStock) {
+                Console.WriteLine ($"\t{stock}");
+            }
+
+            Console.WriteLine ();
+        }
+    }
 }

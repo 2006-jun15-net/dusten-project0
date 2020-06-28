@@ -13,4 +13,11 @@ namespace Project0.DataAccess.Model
         public virtual Product Product { get; set; }
         public virtual Store Store { get; set; }
     }
+
+    public partial class StoreStock : IModel {
+
+        public override string ToString () {
+            return $"{Product.Name} ({ProductQuantity})";
+        }
+    }
 }

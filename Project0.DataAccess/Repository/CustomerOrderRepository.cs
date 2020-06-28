@@ -42,5 +42,13 @@ namespace Project0.DataAccess.Repository {
             return context.CustomerOrder.Where (
                 o => o.Store == store).ToList ();
         }
+
+        public void Add (CustomerOrder order) {
+
+            using var context = new Project0Context (mOptions);
+            
+            context.CustomerOrder.Add (order);
+            context.SaveChanges ();
+        }
     }
 }

@@ -2,7 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
-
+using Project0.Business;
 using Project0.DataAccess.Model;
 using Project0.DataAccess.Repository;
 
@@ -32,9 +32,8 @@ namespace Project0.Main {
             Console.Write ("Please enter your name: ");
 
             var name = Console.ReadLine ();
-            var nameReg = @"^[A-Z][a-z]+ [A-Z][a-z]+";
 
-            while (!Regex.Match(name, nameReg).Success) {
+            while (!Regex.Match(name, CustomerBuilder.NAME_REGEX).Success) {
 
                 Console.Write ("Please enter in the form \"Firstname Lastname\": ");
                 name = Console.ReadLine ();
@@ -54,9 +53,14 @@ namespace Project0.Main {
 
                 Console.WriteLine ($"\nWelcome, {name}!");
 
-                // Guaranteed to have two values because of the Regex matching
-                var firstlast = name.Split (" ");
-                mCurrentCustomer = customerRepository.AddCustomer (firstlast[0], firstlast[1]);
+                // 'name' should to have two values because of the Regex matching
+                mCurrentCustomer = new CustomerBuilder ().Build (name);
+
+                if (mCurrentCustomer == default) {
+                    // TODO 
+                }
+
+                customerRepository.Add (mCurrentCustomer);
             }
         }
 
@@ -221,15 +225,16 @@ namespace Project0.Main {
                 order.ShowInfoForCustomer ();
             }
         }
-        /*
+
         /// <summary>
         /// Allow the customer to create a new order by "shopping" for 
         /// products in the currently selected store
         /// </summary>
         /// <param name="orderRepository">Repository of customer orders</param>
-        internal void NewCustomerOrder (OrderRepository orderRepository) {
+        /// <param name="storeStockRepository">Repository of store stock</param>
+        internal void NewCustomerOrder (CustomerOrderRepository orderRepository, StoreStockRepository storeStockRepository) {
 
-            var order = new Order (mCurrentCustomer, mCurrentStore);
+            var orderBuilder = new OrderBuilder ();
 
             mCurrentStore.ShowProductStock ();
 
@@ -247,63 +252,32 @@ namespace Project0.Main {
                 }
 
                 else if (input.ToLower () == "p") {
-
-                    Console.WriteLine ();
-                    order.ShowInfo ();
-                    Console.WriteLine ();
-                }
-
-                else if (!mCurrentStore.HasProductInStock (input)) {
-                    Console.WriteLine ($"Product {input} is out of stock");
+                    orderBuilder.ShowInfo ();
                 }
 
                 else {
 
-                    var productFromStore = mCurrentStore.GetProductByName (input);
-                    int quantity;
+                    int quantity = 0;
 
-                    while (true) {
+                    while (quantity <= 0) {
 
                         Console.Write ("How many: ");
+                        bool gotQuantity = int.TryParse (Console.ReadLine (), out quantity);
 
-                        if (!int.TryParse(Console.ReadLine (), out quantity)) {
-
-                            Console.Write("Please input a numeric value: ");
-                            continue;
-                        }
-
-                        if (quantity > 0) {
-                            
-                            if (quantity > mCurrentStore.ProductQuantity (productFromStore.Name)) {
-
-                                Console.WriteLine ($"Invalid quantity of {productFromStore.Name}");
-                                Console.Write ("How many: ");
-
-                                continue;
-                            }
-
-                            // Loop only ends when a valid quantity has been entered
-                            // (0 < quantity < availble stock in store)
-                            break;
+                        if (!gotQuantity) {
+                            quantity = 0;
                         }
                     }
-                    
-                    if (!order.AddProduct (mCurrentStore, input, quantity)) {
-                        Console.WriteLine ($"Can't add more than {Order.MAX_PRODUCTS} products to an order");
+
+                    bool success = orderBuilder.AddProduct (mCurrentStore, storeStockRepository, input, quantity);
+
+                    if (!success) {
+                        continue;
                     }
-
-                    if (order.ProductCount == Order.MAX_PRODUCTS) {
-
-                        Console.WriteLine ("Order is now full!");
-                        break;
-                    }
-
-                    Console.WriteLine ($"Order now has {order.ProductCount} products");
                 }
             }
 
-            order.Finish ();
-            orderRepository.AddOrder (order);
-        }*/
+            orderRepository.Add (orderBuilder.GetFinishedOrder (mCurrentCustomer, mCurrentStore));
+        }
     }
 }

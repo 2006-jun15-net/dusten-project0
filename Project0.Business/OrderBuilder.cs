@@ -23,6 +23,8 @@ namespace Project0.Business {
             var stock = storeStockRepository.FindStockedProductByName (store, productName);
 
             if (stock == default) {
+
+                Console.WriteLine ("");
                 return false;
             }
 

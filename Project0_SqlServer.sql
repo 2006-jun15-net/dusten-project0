@@ -108,6 +108,8 @@ INSERT INTO Business.Store (Name) VALUES ('Milk and Cheese');
 
 -- Customers
 INSERT INTO Business.Customer (StoreId, Firstname, Lastname) VALUES (1, 'John', 'Smith');
+INSERT INTO Business.Customer (StoreId, Firstname, Lastname) VALUES (1, 'Thomas', 'Anderson');
+INSERT INTO Business.Customer (StoreId, Firstname, Lastname) VALUES (1, 'Agent', 'Smith');
 
 -- Products
 INSERT INTO Business.Product (Name, Price) VALUES ('Milk', 1.5);

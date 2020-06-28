@@ -26,6 +26,8 @@ namespace Project0.Main {
 
             var storeRepository = new StoreRepository (options);
             var customerRepository = new CustomerRepository (options);
+            var orderRepository = new CustomerOrderRepository (options);
+            var stockRepository = new StoreStockRepository (options);
 
             // Let the customer input their name 
             handler.AcceptCustomerName (customerRepository);
@@ -44,17 +46,17 @@ namespace Project0.Main {
 
                     case IOHandler.Option.LIST_CUSTOMER_ORDERS:
 
-                        // handler.ListCustomerOrders (orderRepository);
+                        handler.ListCustomerOrders (orderRepository);
                         break;
 
                     case IOHandler.Option.LIST_STORE_ORDERS:
 
-                        // handler.ListStoreOrders (orderRepository);
+                        handler.ListStoreOrders (orderRepository);
                         break;
 
                     case IOHandler.Option.NEW_ORDER:
 
-                        // handler.NewCustomerOrder (orderRepository);
+                        handler.NewCustomerOrder (orderRepository, stockRepository);
                         break;
 
                     case IOHandler.Option.QUIT:

@@ -29,7 +29,7 @@ namespace Project0.DataAccess.Repository {
 
         public List<CustomerOrder> FindByCustomer (Customer customer) {
 
-            using var context = new Project0Context (mOptions);  
+            using var context = new Project0Context (mOptions);
 
             return context.CustomerOrder.Where (
                 o => o.Customer == customer).ToList ();

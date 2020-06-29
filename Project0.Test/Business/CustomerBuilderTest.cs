@@ -17,14 +17,17 @@ namespace Project0.Test.Business {
         public void TestBuildSuccess () {
 
             var customer = mCustomerBuilder.Build ("Agent Smith");
-            Assert.NotSame (default(Customer), customer);
+
+            Assert.Equal ("Agent", customer.Firstname);
+            Assert.Equal ("Smith", customer.Lastname);
         }
 
         [Fact]
         public void TestBuildFailure () {
 
-            var customer = mCustomerBuilder.Build ("AgentSmith");
-            Assert.Same (default(Customer), customer);
+            Assert.Throws<BusinessLogicException> (
+                () => mCustomerBuilder.Build ("AgentSmith")
+            );
         }
     }
 }

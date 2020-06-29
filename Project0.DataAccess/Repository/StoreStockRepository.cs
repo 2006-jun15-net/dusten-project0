@@ -33,10 +33,8 @@ namespace Project0.DataAccess.Repository {
 
             try {
 
-                var stock = context.Store.Select (s => s.StoreStock).First ();
                 var product = context.Product.Where (p => p.Name == name).First ();
-
-                stockedProduct = stock.Where (s => s.ProductId == product.Id && s.StoreId == store.Id).First ();
+                stockedProduct = store.StoreStock.Where (s => s.ProductId == product.Id).First ();
 
             } catch (Exception) {}
 

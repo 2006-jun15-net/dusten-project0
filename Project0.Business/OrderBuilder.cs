@@ -1,6 +1,6 @@
 ﻿using System;
 using System.Collections.Generic;
-
+using System.Linq;
 using Project0.DataAccess.Model;
 using Project0.DataAccess.Repository;
 
@@ -18,7 +18,7 @@ namespace Project0.Business {
 
         public void AddProduct (Store store, StoreStockRepository storeStockRepository, string productName, int quantity) {
 
-            var stock = storeStockRepository.FindStockedProductByName (store, productName);
+            var stock = store.StoreStock.Where (s => s.Product.Name == productName).FirstOrDefault ();
 
             if (stock == default) {
                 throw new BusinessLogicException ($"Couldn't find {productName} at {store.Name}");
@@ -32,6 +32,7 @@ namespace Project0.Business {
                 throw new BusinessLogicException ($"This order doesn't have enough space for {quantity} more item(s)");
             }
 
+            // TODO fix this (shouldn't need to reference repository here)
             storeStockRepository.RemoveQuantity (stock, quantity);
 
             mOrderLines.Add (new OrderLine {
@@ -53,6 +54,8 @@ namespace Project0.Business {
         }
 
         public CustomerOrder GetFinishedOrder (Customer customer, Store store) {
+
+            // TODO rem from storestock, save after order finished?
 
             return new CustomerOrder {
 

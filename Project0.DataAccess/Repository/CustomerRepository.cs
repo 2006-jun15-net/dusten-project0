@@ -66,7 +66,7 @@ namespace Project0.DataAccess.Repository {
         public Customer FindByName (string name) {
 
             using var context = new Project0Context(mOptions);
-            return context.Customer.Where (c => c.Name == name).FirstOrDefault ();
+            return context.Customer.Where (c => (c.Firstname + " " + c.Lastname) == name).FirstOrDefault ();
         }
     }
 }

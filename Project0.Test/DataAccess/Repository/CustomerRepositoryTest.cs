@@ -1,3 +1,4 @@
+using Project0.DataAccess.Model;
 using Project0.DataAccess.Repository;
 
 using Xunit;
@@ -16,9 +17,10 @@ namespace Project0.Test.DataAccess.Repository {
         public void TestFindByName () {
 
             var customerByName = mCustomerRepository.FindByName ("Agent Smith");
-            var customerById = mCustomerRepository.FindById (1);
+            var customerById = mCustomerRepository.FindById (3);
 
-            Assert.Equal (customerById, customerByName);
+            Assert.Equal (customerById.Id, customerByName.Id);
+            Assert.Equal (customerByName.Name, customerById.Name);
         }
 
         [Fact]

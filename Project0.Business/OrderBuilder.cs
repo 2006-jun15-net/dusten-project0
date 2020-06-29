@@ -16,24 +16,20 @@ namespace Project0.Business {
             mOrderLines = new List<OrderLine> ();
         }
 
-        public bool AddProduct (Store store, StoreStockRepository storeStockRepository, string productName, int quantity) {
-
-            // TODO print error messages
+        public void AddProduct (Store store, StoreStockRepository storeStockRepository, string productName, int quantity) {
 
             var stock = storeStockRepository.FindStockedProductByName (store, productName);
 
             if (stock == default) {
-
-                Console.WriteLine ("");
-                return false;
+                throw new BusinessLogicException ($"Couldn't find {productName} at {store.Name}");
             }
 
             if (stock.ProductQuantity < quantity) {
-                return false;
+                throw new BusinessLogicException ($"Invalid quantity of {productName}");
             }
 
             if (OrderFullAfter (quantity)) {
-                return false;
+                throw new BusinessLogicException ($"This order doesn't have enough space for {quantity} more item(s)");
             }
 
             storeStockRepository.RemoveQuantity (stock, quantity);
@@ -43,8 +39,6 @@ namespace Project0.Business {
                 ProductId = stock.ProductId,
                 ProductQuantity = quantity
             });
-
-            return true;
         }
 
         private bool OrderFullAfter (int quantity) {

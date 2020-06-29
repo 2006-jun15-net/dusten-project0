@@ -32,7 +32,7 @@ namespace Project0.DataAccess.Repository {
             using var context = new Project0Context (mOptions);
 
             return context.CustomerOrder.Where (
-                o => o.Customer == customer).ToList ();
+                o => o.CustomerId == customer.Id).ToList ();
         }
 
         public List<CustomerOrder> FindByStore (Store store) {
@@ -40,7 +40,7 @@ namespace Project0.DataAccess.Repository {
             using var context = new Project0Context (mOptions);  
 
             return context.CustomerOrder.Where (
-                o => o.Store == store).ToList ();
+                o => o.StoreId == store.Id).ToList ();
         }
 
         public void Add (CustomerOrder order) {

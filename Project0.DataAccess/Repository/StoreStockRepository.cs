@@ -36,7 +36,7 @@ namespace Project0.DataAccess.Repository {
                 var stock = context.Store.Select (s => s.StoreStock).First ();
                 var product = context.Product.Where (p => p.Name == name).First ();
 
-                stockedProduct = stock.Where (s => s.Product == product && s.Store == store).First ();
+                stockedProduct = stock.Where (s => s.ProductId == product.Id && s.StoreId == store.Id).First ();
 
             } catch (Exception) {}
 
@@ -47,7 +47,7 @@ namespace Project0.DataAccess.Repository {
 
             using var context = new Project0Context (mOptions);
 
-            context.StoreStock.Where (s => s == storeStock).First ().ProductQuantity -= quantity;
+            context.StoreStock.Where (s => s.Id == storeStock.Id).First ().ProductQuantity -= quantity;
             context.SaveChanges ();
         }
     }

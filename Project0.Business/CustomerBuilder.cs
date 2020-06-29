@@ -12,9 +12,7 @@ namespace Project0.Business {
             var names = name.Split (" ");
 
             if (names.Length != 2) {
-
-                Console.WriteLine ("Need name in the form of 'Firstname Lastname'");
-                return default;
+                throw new BusinessLogicException ("Need name in the form of 'Firstname Lastname'");
             }
 
             return new Customer {

@@ -53,12 +53,18 @@ namespace Project0.Main {
 
                 Console.WriteLine ($"\nWelcome, {name}!");
 
-                // 'name' should to have two values because of the Regex matching
-                mCurrentCustomer = new CustomerBuilder ().Build (name);
+                // Exception should never be thrown under normal circumstances 
+                // ('name' should have two values because of the Regex matching)
 
-                if (mCurrentCustomer == default) {
-                    // TODO 
-                }
+                try {
+                    mCurrentCustomer = new CustomerBuilder ().Build (name);
+
+                } catch (BusinessLogicException e) {
+
+                    Console.WriteLine (e.Message);
+                } 
+                // More logic could be added here to resolve the conflict, 
+                // but for now we'll just let the program break
 
                 customerRepository.Add (mCurrentCustomer);
             }
@@ -269,9 +275,12 @@ namespace Project0.Main {
                         }
                     }
 
-                    bool success = orderBuilder.AddProduct (mCurrentStore, storeStockRepository, input, quantity);
+                    try {
+                        orderBuilder.AddProduct (mCurrentStore, storeStockRepository, input, quantity);
+                    
+                    } catch (BusinessLogicException e) {
 
-                    if (!success) {
+                        Console.WriteLine (e.Message);
                         continue;
                     }
                 }

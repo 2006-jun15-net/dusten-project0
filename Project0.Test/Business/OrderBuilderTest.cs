@@ -13,64 +13,48 @@ namespace Project0.Test.Business {
     public class OrderBuilderTest {
 
         private readonly OrderBuilder mOrderBuilder;
-        private readonly StoreStockRepository mStoreStockRepository;
+        private readonly Store mTestStore;
 
         public OrderBuilderTest () {
 
-            ILoggerFactory MyLoggerFactory = LoggerFactory.Create (builder => { builder.AddConsole (); });
+            var testProduct = new Product {
+                Name = "Test"
+            };
 
-            string connectionString = ConnectionString.mConnectionString;
+            var testStock = new StoreStock {
+                Product = testProduct,
+                ProductQuantity = 100
+            };
 
-            var options = new DbContextOptionsBuilder<Project0Context> ()
-                .UseLoggerFactory (MyLoggerFactory)
-                .UseSqlServer (connectionString)
-                .Options;
+            mTestStore = new Store {
+                StoreStock = { testStock }
+            };
 
             mOrderBuilder = new OrderBuilder ();
-            mStoreStockRepository = new StoreStockRepository (options);
         }
 
         [Fact]
         public void TestAddProductSuccess () {
 
-            var testStore = new Store {
-                Id = 1
-            };
-            
-            var testCustomer = new Customer {
-                Id = 1
-            };
-
-            mOrderBuilder.AddProduct (testStore, mStoreStockRepository, "Milk", 2);
-            
-            var order = mOrderBuilder.GetFinishedOrder (testCustomer, testStore);
-
-            Assert.Single(order.OrderLine);
+            // No thrown exception = success
+            mOrderBuilder.AddProduct (mTestStore, "Test", 2);
         }
 
         [Fact]
         public void TestAddProductFailQuantity () {
 
-            var testStore = new Store {
-                Id = 1
-            };
-
             // Quantity should not be allowed
             Assert.Throws<BusinessLogicException> (
-                () => mOrderBuilder.AddProduct (testStore, mStoreStockRepository, "Milk", 21)
+                () => mOrderBuilder.AddProduct (mTestStore, "Test", 21)
             );
         }
 
         [Fact]
         public void TestAddProductFailName () {
 
-            var testStore = new Store {
-                Id = 1
-            };
-
             // Name should not exist
             Assert.Throws<BusinessLogicException> (
-                () => mOrderBuilder.AddProduct (testStore, mStoreStockRepository, "Bacon", 2)
+                () => mOrderBuilder.AddProduct (mTestStore, "Bacon", 2)
             );
         }
     }

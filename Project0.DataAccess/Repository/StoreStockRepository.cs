@@ -41,11 +41,14 @@ namespace Project0.DataAccess.Repository {
             return stockedProduct;
         }
 
-        public void RemoveQuantity (StoreStock storeStock, int quantity) {
+        public void SaveStoreStockQuantities (ICollection<StoreStock> storeStock) {
 
             using var context = new Project0Context (mOptions);
+            
+            foreach (var stock in storeStock) {
+                context.StoreStock.Where (s => s.Id == stock.Id).First ().ProductQuantity -= stock.ProductQuantity;
+            }
 
-            context.StoreStock.Where (s => s.Id == storeStock.Id).First ().ProductQuantity -= quantity;
             context.SaveChanges ();
         }
     }

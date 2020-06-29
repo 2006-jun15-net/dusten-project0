@@ -16,7 +16,7 @@ namespace Project0.Business {
             mOrderLines = new List<OrderLine> ();
         }
 
-        public void AddProduct (Store store, StoreStockRepository storeStockRepository, string productName, int quantity) {
+        public void AddProduct (Store store, string productName, int quantity) {
 
             var stock = store.StoreStock.Where (s => s.Product.Name == productName).FirstOrDefault ();
 
@@ -32,8 +32,7 @@ namespace Project0.Business {
                 throw new BusinessLogicException ($"This order doesn't have enough space for {quantity} more item(s)");
             }
 
-            // TODO fix this (shouldn't need to reference repository here)
-            storeStockRepository.RemoveQuantity (stock, quantity);
+            stock.ProductQuantity -= quantity;
 
             mOrderLines.Add (new OrderLine {
 
@@ -53,9 +52,9 @@ namespace Project0.Business {
             return netQuantity >= MAX_PRODUCTS;
         }
 
-        public CustomerOrder GetFinishedOrder (Customer customer, Store store) {
+        public CustomerOrder GetFinishedOrder (Customer customer, Store store, StoreStockRepository storeStockRepository) {
 
-            // TODO rem from storestock, save after order finished?
+            storeStockRepository.SaveStoreStockQuantities (store.StoreStock);
 
             return new CustomerOrder {
 

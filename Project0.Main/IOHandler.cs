@@ -276,7 +276,7 @@ namespace Project0.Main {
                     }
 
                     try {
-                        orderBuilder.AddProduct (mCurrentStore, storeStockRepository, input, quantity);
+                        orderBuilder.AddProduct (mCurrentStore, input, quantity);
                     
                     } catch (BusinessLogicException e) {
 
@@ -286,7 +286,7 @@ namespace Project0.Main {
                 }
             }
 
-            orderRepository.Add (orderBuilder.GetFinishedOrder (mCurrentCustomer, mCurrentStore));
+            orderRepository.Add (orderBuilder.GetFinishedOrder (mCurrentCustomer, mCurrentStore, storeStockRepository));
         }
     }
 }

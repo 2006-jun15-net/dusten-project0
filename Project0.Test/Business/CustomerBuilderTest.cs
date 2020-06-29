@@ -1,7 +1,6 @@
 ﻿using Xunit;
 
 using Project0.Business;
-using Project0.DataAccess.Model;
 
 namespace Project0.Test.Business {
 

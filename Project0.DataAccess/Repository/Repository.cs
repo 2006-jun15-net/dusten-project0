@@ -11,5 +11,10 @@ namespace Project0.DataAccess.Repository {
         public Repository (DbContextOptions<Project0Context> options) {
             mOptions = options;
         }
+
+        /// <summary>
+        /// FOR UNIT TESTS ONLY!!!!
+        /// </summary>
+        public Repository () { }
     }
 }

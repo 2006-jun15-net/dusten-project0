@@ -104,22 +104,30 @@ BEGIN
 END
 
 -- Stores
-INSERT INTO Business.Store (Name) VALUES ('Milk and Cheese');
+INSERT INTO Business.Store (Name) VALUES ('Milk and Cheese'); -- 1
 
 -- Customers
-INSERT INTO Business.Customer (StoreId, Firstname, Lastname) VALUES (1, 'John', 'Smith');
-INSERT INTO Business.Customer (StoreId, Firstname, Lastname) VALUES (1, 'Thomas', 'Anderson');
-INSERT INTO Business.Customer (StoreId, Firstname, Lastname) VALUES (1, 'Agent', 'Smith');
+INSERT INTO Business.Customer (StoreId, Firstname, Lastname) VALUES (1, 'John', 'Smith'); -- 1
+INSERT INTO Business.Customer (StoreId, Firstname, Lastname) VALUES (1, 'Thomas', 'Anderson'); -- 2
+INSERT INTO Business.Customer (StoreId, Firstname, Lastname) VALUES (1, 'Agent', 'Smith'); -- 3
 
 -- Products
-INSERT INTO Business.Product (Name, Price) VALUES ('Milk', 1.5);
-INSERT INTO Business.Product (Name, Price) VALUES ('Cheese', 2.0);
+INSERT INTO Business.Product (Name, Price) VALUES ('Milk', 1.5); -- 1
+INSERT INTO Business.Product (Name, Price) VALUES ('Cheese', 2.0); -- 2
 
--- StoreStock
-INSERT INTO Business.StoreStock (StoreId, ProductId, ProductQuantity) VALUES (1, 1, 50);
-INSERT INTO Business.StoreStock (StoreId, ProductId, ProductQuantity) VALUES (1, 2, 50);
+-- StoreStocks
+INSERT INTO Business.StoreStock (StoreId, ProductId, ProductQuantity) VALUES (1, 1, 50); -- 1
+INSERT INTO Business.StoreStock (StoreId, ProductId, ProductQuantity) VALUES (1, 2, 50); -- 2
+
+-- CustomerOrders
+INSERT INTO Business.CustomerOrder (CustomerId, StoreId) VALUES (1, 1); -- 1
+
+-- OrderLines
+INSERT INTO Business.OrderLine (OrderId, ProductId, ProductQuantity) VALUES (1, 1, 2); -- 1
 
 SELECT * FROM Business.Store;
 SELECT * FROM Business.Customer;
 SELECT * FROM Business.Product;
 SELECT * FROM Business.StoreStock;
+SELECT * FROM Business.CustomerOrder;
+SELECT * FROM Business.OrderLine;

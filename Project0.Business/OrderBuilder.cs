@@ -52,6 +52,7 @@ namespace Project0.Business {
             return netQuantity >= MAX_PRODUCTS;
         }
 
+        // TODO add datetime to Order model
         public CustomerOrder GetFinishedOrder (Customer customer, Store store, StoreStockRepository storeStockRepository) {
 
             storeStockRepository.SaveStoreStockQuantities (store.StoreStock);

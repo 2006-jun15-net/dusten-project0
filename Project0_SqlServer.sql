@@ -10,7 +10,7 @@ CREATE TABLE Business.Store (
 
 CREATE TABLE Business.Customer (
 
-	Id INT IDENTITY(1, 1) NOT NULL, 
+	Id INT IDENTITY(1, 1) NOT NULL,
 	StoreId INT NULL,
 	Firstname NVARCHAR(200) NOT NULL,
 	Lastname NVARCHAR(200) NOT NULL,
@@ -22,6 +22,7 @@ CREATE TABLE Business.CustomerOrder (
 	Id INT IDENTITY(1, 1) NOT NULL,
 	CustomerId INT NOT NULL,
 	StoreId INT NOT NULL,
+	Timestamp DATETIME NOT NULL,
 	CONSTRAINT PK_CustomerOrder_Id PRIMARY KEY (Id)
 );
 
@@ -105,6 +106,7 @@ END
 
 -- Stores
 INSERT INTO Business.Store (Name) VALUES ('Milk and Cheese'); -- 1
+INSERT INTO Business.Store (Name) VALUES ('Escalona Mart'); -- 2
 
 -- Customers
 INSERT INTO Business.Customer (StoreId, Firstname, Lastname) VALUES (1, 'John', 'Smith'); -- 1
@@ -114,16 +116,21 @@ INSERT INTO Business.Customer (StoreId, Firstname, Lastname) VALUES (1, 'Agent',
 -- Products
 INSERT INTO Business.Product (Name, Price) VALUES ('Milk', 1.5); -- 1
 INSERT INTO Business.Product (Name, Price) VALUES ('Cheese', 2.0); -- 2
+INSERT INTO Business.Product (Name, Price) VALUES ('Pie', 5.0); -- 3
+INSERT INTO Business.Product (Name, Price) VALUES ('Coffee', 1.0); -- 4
 
 -- StoreStocks
 INSERT INTO Business.StoreStock (StoreId, ProductId, ProductQuantity) VALUES (1, 1, 50); -- 1
 INSERT INTO Business.StoreStock (StoreId, ProductId, ProductQuantity) VALUES (1, 2, 50); -- 2
+INSERT INTO Business.StoreStock (StoreId, ProductId, ProductQuantity) VALUES (2, 4, 100); -- 3
 
 -- CustomerOrders
-INSERT INTO Business.CustomerOrder (CustomerId, StoreId) VALUES (1, 1); -- 1
+INSERT INTO Business.CustomerOrder (CustomerId, StoreId, Timestamp) VALUES (1, 1, '2020-06-28 00:00:00'); -- 1
+INSERT INTO Business.CustomerOrder (CustomerId, StoreId, Timestamp) VALUES (3, 2, '2020-06-30 00:00:00'); -- 2
 
 -- OrderLines
 INSERT INTO Business.OrderLine (OrderId, ProductId, ProductQuantity) VALUES (1, 1, 2); -- 1
+INSERT INTO Business.OrderLine (OrderId, ProductId, ProductQuantity) VALUES (2, 4, 12); -- 2
 
 SELECT * FROM Business.Store;
 SELECT * FROM Business.Customer;

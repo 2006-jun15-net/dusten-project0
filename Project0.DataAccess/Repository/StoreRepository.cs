@@ -36,7 +36,9 @@ namespace Project0.DataAccess.Repository {
         public virtual Store FindByName (string name) {
 
             using var context = new Project0Context (mOptions);
-            return context.Store.Where (s => s.Name == name).FirstOrDefault ();
+
+            return context.Store.Where (s => s.Name == name)
+                .Include (s => s.StoreStock).Include (s => s.CustomerOrder).FirstOrDefault ();
         }
     }
 }

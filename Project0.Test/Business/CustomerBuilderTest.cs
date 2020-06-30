@@ -15,10 +15,10 @@ namespace Project0.Test.Business {
         [Fact]
         public void TestBuildSuccess () {
 
-            var customer = mCustomerBuilder.Build ("Agent Smith");
+            var customer = mCustomerBuilder.Build ("Test Customer");
 
-            Assert.Equal ("Agent", customer.Firstname);
-            Assert.Equal ("Smith", customer.Lastname);
+            Assert.Equal ("Test", customer.Firstname);
+            Assert.Equal ("Customer", customer.Lastname);
         }
 
         [Fact]

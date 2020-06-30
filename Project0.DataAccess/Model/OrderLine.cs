@@ -20,7 +20,7 @@ namespace Project0.DataAccess.Model
 
             double totalPrice = Product.Price * ProductQuantity;
 
-            return $"{Product.Name} ({Product.Price:#.00}) x {ProductQuantity}: {totalPrice:#.00}";
+            return $"{Product.Name} (${Product.Price:0.00}) x {ProductQuantity}: ${totalPrice:0.00}";
         }
     }
 }

@@ -205,7 +205,9 @@ namespace Project0.Main {
             Console.WriteLine ($"Listing orders for customer {mCurrentCustomer.Name}:\n");
 
             foreach (var order in orders) {
+
                 order.ShowInfoForStore ();
+                Console.WriteLine ();
             }
         }
 
@@ -228,7 +230,9 @@ namespace Project0.Main {
             Console.WriteLine ($"Listing orders for store {mCurrentStore.Name}:\n");
 
             foreach (var order in orders) {
+
                 order.ShowInfoForCustomer ();
+                Console.WriteLine ();
             }
         }
 

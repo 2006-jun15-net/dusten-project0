@@ -8,11 +8,11 @@ using System.Linq;
 
 namespace Project0.Test.DataAccess.Repository {
 
-    public class StoreRepositoryTest : RepositoryTest {
+    public class StoreRepositoryTest {
 
         private readonly StoreRepository mStoreRepository;
 
-        public StoreRepositoryTest () : base () {
+        public StoreRepositoryTest () {
 
             var mockStoreRepo = new Mock<StoreRepository> ();
 

@@ -61,6 +61,7 @@ namespace Project0.Business {
 
                 CustomerId = customer.Id,
                 StoreId = store.Id,
+                Timestamp = DateTime.Now,
                 OrderLine = mOrderLines
             };
         }
@@ -77,7 +78,7 @@ namespace Project0.Business {
                 orderTotal += line.Product.Price * line.ProductQuantity;
             }
 
-            Console.WriteLine ($"\n\tTotal: {orderTotal:#.00}\n");
+            Console.WriteLine ($"\n\tTotal: ${orderTotal:0.00}\n");
         }
     }
 }

@@ -13,6 +13,7 @@ namespace Project0.DataAccess.Model
         public int Id { get; set; }
         public int CustomerId { get; set; }
         public int StoreId { get; set; }
+        public DateTime Timestamp { get; set; }
 
         public virtual Customer Customer { get; set; }
         public virtual Store Store { get; set; }
@@ -51,7 +52,7 @@ namespace Project0.DataAccess.Model
 
             foreach (var line in OrderLine) {
 
-                Console.WriteLine ($"{line.Product} ({line.ProductQuantity})");
+                Console.WriteLine ($"\t{line}");
                 total += line.Product.Price * line.ProductQuantity;
             }
 

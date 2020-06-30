@@ -31,16 +31,18 @@ namespace Project0.DataAccess.Repository {
 
             using var context = new Project0Context (mOptions);
 
-            return context.CustomerOrder.Where (
-                o => o.CustomerId == customer.Id).ToList ();
+            return context.CustomerOrder.Where (o => o.CustomerId == customer.Id)
+                .Include (o => o.Store).Include (o => o.OrderLine)
+                .ThenInclude (o => o.Product).ToList ();
         }
 
         public List<CustomerOrder> FindByStore (Store store) {
 
             using var context = new Project0Context (mOptions);  
 
-            return context.CustomerOrder.Where (
-                o => o.StoreId == store.Id).ToList ();
+            return context.CustomerOrder.Where (o => o.StoreId == store.Id)
+                .Include (o => o.Customer).Include (o => o.OrderLine)
+                .ThenInclude (o => o.Product).ToList ();
         }
 
         public void Add (CustomerOrder order) {

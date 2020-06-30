@@ -51,22 +51,14 @@ namespace Project0.DataAccess.Repository {
             context.Customer.Remove (customer);
         }
 
-        public List<Customer> FindByFirstname (string firstname) {
-
-            using var context = new Project0Context(mOptions);
-            return context.Customer.Where (c => c.Firstname == firstname).ToList ();
-        }
-
-        public List<Customer> FindByLastname (string lastname) {
-
-            using var context = new Project0Context(mOptions);
-            return context.Customer.Where (c => c.Lastname == lastname).ToList ();
-        }
-
         public Customer FindByName (string name) {
 
             using var context = new Project0Context(mOptions);
-            return context.Customer.Where (c => (c.Firstname + " " + c.Lastname) == name).FirstOrDefault ();
+
+            return context.Customer.Where (c => (c.Firstname + " " + c.Lastname) == name)
+                .Include (c => c.Store).ThenInclude (s => s.CustomerOrder)
+                .Include (c => c.Store).ThenInclude (s => s.StoreStock)
+                .Include (c => c.CustomerOrder).FirstOrDefault ();
         }
     }
 }

@@ -1,5 +1,9 @@
-﻿using Project0.Business;
-using Project0.Business.Database;
+﻿using Microsoft.EntityFrameworkCore;
+using Microsoft.Extensions.Logging;
+
+using Project0.DataAccess;
+using Project0.DataAccess.Model;
+using Project0.DataAccess.Repository;
 
 namespace Project0.Main {
 
@@ -9,27 +13,27 @@ namespace Project0.Main {
         static void Main (string[] args) {
 #pragma warning restore IDE0060 // Remove unused parameter
 
-            // JSON files are stored at the solution's parent directory
-            // (this would need to change if running the program by itself)
-            var productRepository = new ProductRepository ("../../../../products.json");
-            productRepository.LoadItems (); // Unfortunately, 'LoadItems' always has to be called separately
+            ILoggerFactory MyLoggerFactory = LoggerFactory.Create (builder => { builder.AddConsole (); });
 
-            var storeRepository = new StoreRepository ("../../../../stores.json", productRepository);
-            storeRepository.LoadItems ();
+            string connectionString = ConnectionString.mConnectionString;
 
-            var customerRepository = new CustomerRepository ("../../../../customers.json", storeRepository);
-            customerRepository.LoadItems ();
-
-            var orderRepository = new OrderRepository ("../../../../orders.json", productRepository, customerRepository, storeRepository);
-            orderRepository.LoadItems ();
+            DbContextOptions<Project0Context> options = new DbContextOptionsBuilder<Project0Context> ()
+                .UseLoggerFactory (MyLoggerFactory)
+                .UseSqlServer (connectionString)
+                .Options;
 
             var handler = new IOHandler ();
+
+            var storeRepository = new StoreRepository (options);
+            var customerRepository = new CustomerRepository (options);
+            var orderRepository = new CustomerOrderRepository (options);
+            var stockRepository = new StoreStockRepository (options);
 
             // Let the customer input their name 
             handler.AcceptCustomerName (customerRepository);
 
             // Let the customer choose which store to order from
-            handler.AcceptStoreChoice (storeRepository);
+            handler.AcceptStoreChoice (storeRepository, customerRepository);
 
             bool running = true;
 
@@ -52,7 +56,7 @@ namespace Project0.Main {
 
                     case IOHandler.Option.NEW_ORDER:
 
-                        handler.NewCustomerOrder (orderRepository);
+                        handler.NewCustomerOrder (orderRepository, stockRepository);
                         break;
 
                     case IOHandler.Option.QUIT:
@@ -64,12 +68,6 @@ namespace Project0.Main {
                         break;
                 }
             }
-
-            // Products don't need ot be saved, because product information
-            // doesn't change during this program's runtime
-            customerRepository.SaveItems ();
-            orderRepository.SaveItems ();
-            storeRepository.SaveItems ();
         }
     }
 }

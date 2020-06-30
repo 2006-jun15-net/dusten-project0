@@ -1,10 +1,10 @@
 ﻿using System;
-using System.Collections.Generic;
 using System.Linq;
 using System.Text.RegularExpressions;
 
 using Project0.Business;
-using Project0.Business.Database;
+using Project0.DataAccess.Model;
+using Project0.DataAccess.Repository;
 
 namespace Project0.Main {
 
@@ -32,9 +32,8 @@ namespace Project0.Main {
             Console.Write ("Please enter your name: ");
 
             var name = Console.ReadLine ();
-            var nameReg = @"^[A-Z][a-z]+ [A-Z][a-z]+";
 
-            while (!Regex.Match(name, nameReg).Success) {
+            while (!Regex.Match(name, CustomerBuilder.NAME_REGEX).Success) {
 
                 Console.Write ("Please enter in the form \"Firstname Lastname\": ");
                 name = Console.ReadLine ();
@@ -54,9 +53,20 @@ namespace Project0.Main {
 
                 Console.WriteLine ($"\nWelcome, {name}!");
 
-                // Guaranteed to have two values because of the Regex matching
-                var firstlast = name.Split (" ");
-                mCurrentCustomer = customerRepository.AddCustomer (firstlast[0], firstlast[1]);
+                // Exception should never be thrown under normal circumstances 
+                // ('name' should have two values because of the Regex matching)
+
+                try {
+                    mCurrentCustomer = new CustomerBuilder ().Build (name);
+
+                } catch (BusinessLogicException e) {
+
+                    Console.WriteLine (e.Message);
+                } 
+                // More logic could be added here to resolve the conflict, 
+                // but for now we'll just let the program break
+
+                customerRepository.Add (mCurrentCustomer);
             }
         }
 
@@ -65,49 +75,45 @@ namespace Project0.Main {
         /// (defaults to the last store they shopped at)
         /// </summary>
         /// <param name="storeRepository">Repository of stores</param>
-        internal void AcceptStoreChoice (StoreRepository storeRepository) {
+        /// <param name="customerRepository">Repository of customer</param>
+        internal void AcceptStoreChoice (StoreRepository storeRepository, CustomerRepository customerRepository) {
 
             var stores = storeRepository.FindAll;
-            var storeNames = new List<string> ();
+            var storeNames = stores.Select (s => s.Name);
 
             Console.WriteLine ("\nStores:");
 
             foreach (var store in stores) {
-
-                Console.WriteLine ($"\t{store.ID}: {store.Name}");
-                storeNames.Add (store.Name);
-            }
-
-            Console.Write ($"\nPlease select a store (default={mCurrentCustomer.Store.ID}): ");
-            var selectedName = Console.ReadLine ();
-
-            if (selectedName.Trim () == "") {
-
-                mCurrentStore = mCurrentCustomer.Store;
-                Console.WriteLine ($"\nWelcome back to {mCurrentStore.Name}!");
-
-                return;
+                Console.WriteLine ($"\t{store.Id}: {store.Name}");
             }
 
             Store selection = default;
+            string selectedName = default;
 
             while (!storeNames.Contains(selectedName)) {
 
-                bool selectByID = ulong.TryParse (selectedName, out ulong selectedID);
+                selectedName = UserSelection ();
+
+                if (mCurrentCustomer.StoreId != null && selectedName.Trim () == "") {
+
+                    mCurrentStore = mCurrentCustomer.Store;
+                    Console.WriteLine ($"\nWelcome back to {mCurrentStore.Name}!");
+
+                    return;
+                }
+
+                bool selectByID = int.TryParse (selectedName, out int selectedID);
 
                 if (selectByID) {
 
                     try {
-                        selection = storeRepository.FindByID (selectedID);
+                        selection = storeRepository.FindById (selectedID);
                     } catch (Exception) { }
 
                     if (selection != default(Store)) {
                         break;
                     }
                 }
-
-                Console.Write ($"Please select a store (default={mCurrentCustomer.Store.ID}): ");
-                selectedName = Console.ReadLine ();
             }
 
             if (selection == default(Store)) {
@@ -117,7 +123,7 @@ namespace Project0.Main {
             mCurrentStore = selection;
 
             // Same store the customer visited previously
-            if (mCurrentCustomer.Store.ID == mCurrentStore.ID) {
+            if (mCurrentCustomer.StoreId == mCurrentStore.Id) {
                 Console.WriteLine ($"\nWelcome back to {mCurrentStore.Name}!");
             }
 
@@ -125,10 +131,25 @@ namespace Project0.Main {
             else {
 
                 Console.WriteLine ($"\nWelcome to {mCurrentStore.Name}!");
-                mCurrentCustomer.Store = mCurrentStore;
+                customerRepository.UpdateStoreId (mCurrentCustomer.Id, mCurrentStore.Id);
             }
         }
 
+        private string UserSelection () {
+
+            // New customer
+            if (mCurrentCustomer.StoreId == null) {
+                Console.Write ($"\nPlease select a store: ");
+            }
+
+            // Customer has a previously visited store
+            else {
+                Console.Write ($"\nPlease select a store (default={mCurrentCustomer.StoreId}): ");
+            }
+
+            return Console.ReadLine ();
+        }
+        
         /// <summary>
         /// The customer can choose to list their current orders,
         /// start a new order, or quit the application
@@ -136,7 +157,7 @@ namespace Project0.Main {
         /// <returns>An Option based on the user's input</returns>
         internal Option AcceptCustomerOption () {
             
-            char input = ' ';
+            char input = default;
             var inputReg = @"^[lsnq]";
 
             Console.WriteLine ();
@@ -169,7 +190,7 @@ namespace Project0.Main {
         /// List all orders for the current customer
         /// </summary>
         /// <param name="orderRepository">Repository of customer orders</param>
-        internal void ListCustomerOrders (OrderRepository orderRepository) {
+        internal void ListCustomerOrders (CustomerOrderRepository orderRepository) {
 
             var orders = orderRepository.FindByCustomer (mCurrentCustomer);
 
@@ -192,7 +213,7 @@ namespace Project0.Main {
         /// List all orders placed at the current store
         /// </summary>
         /// <param name="orderRepository">Repository of customer orders</param>
-        internal void ListStoreOrders (OrderRepository orderRepository) {
+        internal void ListStoreOrders (CustomerOrderRepository orderRepository) {
 
             var orders = orderRepository.FindByStore (mCurrentStore);
 
@@ -216,9 +237,10 @@ namespace Project0.Main {
         /// products in the currently selected store
         /// </summary>
         /// <param name="orderRepository">Repository of customer orders</param>
-        internal void NewCustomerOrder (OrderRepository orderRepository) {
+        /// <param name="storeStockRepository">Repository of store stock</param>
+        internal void NewCustomerOrder (CustomerOrderRepository orderRepository, StoreStockRepository storeStockRepository) {
 
-            var order = new Order (mCurrentCustomer, mCurrentStore);
+            var orderBuilder = new OrderBuilder ();
 
             mCurrentStore.ShowProductStock ();
 
@@ -236,63 +258,35 @@ namespace Project0.Main {
                 }
 
                 else if (input.ToLower () == "p") {
-
-                    Console.WriteLine ();
-                    order.ShowInfo ();
-                    Console.WriteLine ();
-                }
-
-                else if (!mCurrentStore.HasProductInStock (input)) {
-                    Console.WriteLine ($"Product {input} is out of stock");
+                    orderBuilder.ShowInfo ();
                 }
 
                 else {
 
-                    var productFromStore = mCurrentStore.GetProductByName (input);
-                    int quantity;
+                    int quantity = 0;
 
-                    while (true) {
+                    while (quantity <= 0) {
 
                         Console.Write ("How many: ");
+                        bool gotQuantity = int.TryParse (Console.ReadLine (), out quantity);
 
-                        if (!int.TryParse(Console.ReadLine (), out quantity)) {
-
-                            Console.Write("Please input a numeric value: ");
-                            continue;
-                        }
-
-                        if (quantity > 0) {
-                            
-                            if (quantity > mCurrentStore.ProductQuantity (productFromStore.Name)) {
-
-                                Console.WriteLine ($"Invalid quantity of {productFromStore.Name}");
-                                Console.Write ("How many: ");
-
-                                continue;
-                            }
-
-                            // Loop only ends when a valid quantity has been entered
-                            // (0 < quantity < availble stock in store)
-                            break;
+                        if (!gotQuantity) {
+                            quantity = 0;
                         }
                     }
+
+                    try {
+                        orderBuilder.AddProduct (mCurrentStore, input, quantity);
                     
-                    if (!order.AddProduct (mCurrentStore, input, quantity)) {
-                        Console.WriteLine ($"Can't add more than {Order.MAX_PRODUCTS} products to an order");
+                    } catch (BusinessLogicException e) {
+
+                        Console.WriteLine (e.Message);
+                        continue;
                     }
-
-                    if (order.ProductCount == Order.MAX_PRODUCTS) {
-
-                        Console.WriteLine ("Order is now full!");
-                        break;
-                    }
-
-                    Console.WriteLine ($"Order now has {order.ProductCount} products");
                 }
             }
 
-            order.Finish ();
-            orderRepository.AddOrder (order);
+            orderRepository.Add (orderBuilder.GetFinishedOrder (mCurrentCustomer, mCurrentStore, storeStockRepository));
         }
     }
 }

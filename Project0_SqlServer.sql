@@ -57,6 +57,14 @@ ALTER TABLE Business.OrderLine
 	REFERENCES Business.CustomerOrder (Id) ON DELETE CASCADE;
 
 GO
+CREATE TRIGGER Business.OnCustomerOrderDelete ON Business.CustomerOrder
+FOR DELETE
+AS
+BEGIN
+	DELETE Business.OrderLine WHERE OrderId IN (SELECT Id FROM Deleted);
+END
+
+GO
 CREATE TRIGGER Business.OnCustomerDelete ON Business.Customer
 FOR DELETE
 AS

@@ -26,7 +26,7 @@ namespace Project0.DataAccess.Model
 
         public void ShowInfoForStore () {
 
-            Console.WriteLine ($"Order #{Id} placed at {Store.Name}:\n");
+            Console.WriteLine ($"Order #{Id} placed at {Store.Name} on {Timestamp:MM/dd/yy}:\n");
 
             ShowInfo ();
             Console.WriteLine ();
@@ -37,7 +37,7 @@ namespace Project0.DataAccess.Model
         /// </summary>
         public void ShowInfoForCustomer () {
 
-            Console.WriteLine ($"Order #{Id} placed by {Customer.Name}:\n");
+            Console.WriteLine ($"Order #{Id} placed by {Customer.Name} on {Timestamp:MM/dd/yy}:\n");
 
             ShowInfo ();
             Console.WriteLine ();

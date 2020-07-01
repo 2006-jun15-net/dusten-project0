@@ -52,33 +52,9 @@ CREATE TABLE Business.OrderLine (
 	CONSTRAINT PK_OrderLine_Id PRIMARY KEY (Id)
 );
 
-ALTER TABLE Business.Customer
-	ADD CONSTRAINT FK_Customer_Store_StoreId FOREIGN KEY (StoreId) 
-	REFERENCES Business.Store (Id);
-
-ALTER TABLE Business.CustomerOrder
-	ADD CONSTRAINT FK_CustomerOrder_Customer_CustomerId FOREIGN KEY (CustomerId)
-	REFERENCES Business.Customer (Id);
-
-ALTER TABLE Business.CustomerOrder
-	ADD CONSTRAINT FK_CustomerOrder_Store_StoreId FOREIGN KEY (StoreId)
-	REFERENCES Business.Store (Id);
-
-ALTER TABLE Business.StoreStock 
-	ADD CONSTRAINT FK_StoreStock_Store_StoreId FOREIGN KEY (StoreId)
-	REFERENCES Business.Store (Id);
-
-ALTER TABLE Business.StoreStock
-	ADD CONSTRAINT FK_StoreStock_Product_ProductId FOREIGN KEY (ProductId)
-	REFERENCES Business.Product (Id);
-
 ALTER TABLE Business.OrderLine 
 	ADD CONSTRAINT FK_OrderLine_CustomerOrder_OrderId FOREIGN KEY (OrderId)
-	REFERENCES Business.CustomerOrder (Id);
-
-ALTER TABLE Business.OrderLine
-	ADD CONSTRAINT FK_OrderLine_Product_ProductId FOREIGN KEY (ProductId)
-	REFERENCES Business.Product (Id);
+	REFERENCES Business.CustomerOrder (Id) ON DELETE CASCADE;
 
 GO
 CREATE TRIGGER Business.OnCustomerDelete ON Business.Customer
@@ -105,7 +81,7 @@ BEGIN
 END
 
 -- Stores
-INSERT INTO Business.Store (Name) VALUES ('Milk and Cheese'); -- 1
+INSERT INTO Business.Store (Name) VALUES ('Dairy Mart'); -- 1
 INSERT INTO Business.Store (Name) VALUES ('Escalona Mart'); -- 2
 
 -- Customers
@@ -127,10 +103,15 @@ INSERT INTO Business.StoreStock (StoreId, ProductId, ProductQuantity) VALUES (2,
 -- CustomerOrders
 INSERT INTO Business.CustomerOrder (CustomerId, StoreId, Timestamp) VALUES (1, 1, '2020-06-28 00:00:00'); -- 1
 INSERT INTO Business.CustomerOrder (CustomerId, StoreId, Timestamp) VALUES (3, 2, '2020-06-30 00:00:00'); -- 2
+INSERT INTO Business.CustomerOrder (CustomerId, StoreId, Timestamp) VALUES (2, 1, '2020-06-28 00:00:00'); -- 3
+INSERT INTO Business.CustomerOrder (CustomerId, StoreId, Timestamp) VALUES (1, 2, '2020-06-29 00:00:00'); -- 4
 
 -- OrderLines
 INSERT INTO Business.OrderLine (OrderId, ProductId, ProductQuantity) VALUES (1, 1, 2); -- 1
 INSERT INTO Business.OrderLine (OrderId, ProductId, ProductQuantity) VALUES (2, 4, 12); -- 2
+INSERT INTO Business.OrderLine (OrderId, ProductId, ProductQuantity) VALUES (3, 2, 3); -- 3
+INSERT INTO Business.OrderLine (OrderId, ProductId, ProductQuantity) VALUES (3, 1, 3); -- 4
+INSERT INTO Business.OrderLine (OrderId, ProductId, ProductQuantity) VALUES (4, 4, 10); -- 5
 
 SELECT * FROM Business.Store;
 SELECT * FROM Business.Customer;

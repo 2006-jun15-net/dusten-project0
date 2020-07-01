@@ -29,14 +29,28 @@ namespace Project0.Main {
         /// <param name="customerRepository">Repository of customers</param>
         internal void AcceptCustomerName (CustomerRepository customerRepository) {
 
-            Console.Write ("Please enter your name: ");
+            Console.Write ("Please enter your name (L/l to list active users): ");
 
-            var name = Console.ReadLine ();
+            var name = Console.ReadLine ().Trim ();
 
             while (!Regex.Match(name, CustomerBuilder.NAME_REGEX).Success) {
 
-                Console.Write ("Please enter in the form \"Firstname Lastname\": ");
-                name = Console.ReadLine ();
+                if (name.ToLower ().Equals ("l")) {
+
+                    Console.WriteLine ();
+
+                    foreach (var customer in customerRepository.FindAll) {
+                        Console.WriteLine (customer.Name);
+                    }
+
+                    Console.Write ("\nPlease enter your name (L/l to list active users): ");
+                }
+
+                else {
+                    Console.Write ("Please enter in the form \"Firstname Lastname\" (L/l to list active users): ");
+                }
+
+                name = Console.ReadLine ().Trim ();
             }
 
             var customerFromDb = customerRepository.FindByName (name);
@@ -147,7 +161,7 @@ namespace Project0.Main {
                 Console.Write ($"\nPlease select a store (default={mCurrentCustomer.StoreId}): ");
             }
 
-            return Console.ReadLine ();
+            return Console.ReadLine ().Trim ();
         }
         
         /// <summary>
@@ -157,17 +171,17 @@ namespace Project0.Main {
         /// <returns>An Option based on the user's input</returns>
         internal Option AcceptCustomerOption () {
             
-            char input = default;
+            string input = "";
             var inputReg = @"^[lsnq]";
 
             Console.WriteLine ();
 
-            while (!Regex.Match (new string (input, 1), inputReg).Success) {
+            while (!Regex.Match (input, inputReg).Success) {
 
                 Console.Write ("Choose an option (h for help): ");
-                input = Console.ReadLine ().ToLower ().First ();
+                input = Console.ReadLine ().ToLower ().Trim ();
 
-                if (input == 'h') {
+                if (input == "h") {
                     
                     Console.WriteLine("\nH/h: Show this help message");
                     Console.WriteLine("L/l: List all orders for current customer");
@@ -179,9 +193,9 @@ namespace Project0.Main {
 
             return input switch
             {
-                'l' => Option.LIST_CUSTOMER_ORDERS,
-                's' => Option.LIST_STORE_ORDERS,
-                'n' => Option.NEW_ORDER,
+                "l" => Option.LIST_CUSTOMER_ORDERS,
+                "s" => Option.LIST_STORE_ORDERS,
+                "n" => Option.NEW_ORDER,
                 _ => Option.QUIT,
             };
         }
@@ -251,7 +265,7 @@ namespace Project0.Main {
             while (true) {
 
                 Console.Write ("Please choose a product (f to finish, l to relist, p to preview): ");
-                var input = Console.ReadLine ();
+                var input = Console.ReadLine ().Trim ();
 
                 if (input.ToLower () == "f") {
                     break;
@@ -272,7 +286,7 @@ namespace Project0.Main {
                     while (quantity <= 0) {
 
                         Console.Write ("How many: ");
-                        bool gotQuantity = int.TryParse (Console.ReadLine (), out quantity);
+                        bool gotQuantity = int.TryParse (Console.ReadLine ().Trim (), out quantity);
 
                         if (!gotQuantity) {
                             quantity = 0;

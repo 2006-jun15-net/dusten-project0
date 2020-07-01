@@ -18,7 +18,7 @@ namespace Project0.Main {
             string connectionString = ConnectionString.mConnectionString;
 
             DbContextOptions<Project0Context> options = new DbContextOptionsBuilder<Project0Context> ()
-                .UseLoggerFactory (MyLoggerFactory)
+                // .UseLoggerFactory (MyLoggerFactory)
                 .UseSqlServer (connectionString)
                 .Options;
 

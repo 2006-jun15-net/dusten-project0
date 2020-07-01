@@ -21,7 +21,12 @@ namespace Project0.DataAccess.Repository {
         public CustomerRepository (DbContextOptions<Project0Context> options) 
             : base (options) { }
 
-        public Customer FindById (int id) {
+        /// <summary>
+        /// FOR UNIT TESTS ONLY!!!!
+        /// </summary>
+        public CustomerRepository () { }
+
+        public virtual Customer FindById (int id) {
 
             using var context = new Project0Context (mOptions);
             return context.Customer.Where (c => c.Id == id).FirstOrDefault ();
@@ -51,13 +56,13 @@ namespace Project0.DataAccess.Repository {
             context.Customer.Remove (customer);
         }
 
-        public Customer FindByName (string name) {
+        public virtual Customer FindByName (string name) {
 
             using var context = new Project0Context(mOptions);
 
             return context.Customer.Where (c => (c.Firstname + " " + c.Lastname) == name)
                 .Include (c => c.Store).ThenInclude (s => s.CustomerOrder)
-                .Include (c => c.Store).ThenInclude (s => s.StoreStock)
+                .Include (c => c.Store).ThenInclude (s => s.StoreStock).ThenInclude (s => s.Product)
                 .Include (c => c.CustomerOrder).FirstOrDefault ();
         }
     }

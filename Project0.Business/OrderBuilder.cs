@@ -11,9 +11,13 @@ namespace Project0.Business {
         private const int MAX_PRODUCTS = 20;
 
         private readonly List<OrderLine> mOrderLines;
+        // This is necessary due to issues with saving the finished CustomerOrder:
+        private readonly List<Product> mProducts;
       
         public OrderBuilder () {
+
             mOrderLines = new List<OrderLine> ();
+            mProducts = new List<Product> ();
         }
 
         public void AddProduct (Store store, string productName, int quantity) {
@@ -39,6 +43,8 @@ namespace Project0.Business {
                 ProductId = stock.ProductId,
                 ProductQuantity = quantity
             });
+
+            mProducts.Add (stock.Product);
         }
 
         private bool OrderFullAfter (int quantity) {
@@ -52,7 +58,6 @@ namespace Project0.Business {
             return netQuantity >= MAX_PRODUCTS;
         }
 
-        // TODO add datetime to Order model
         public CustomerOrder GetFinishedOrder (Customer customer, Store store, StoreStockRepository storeStockRepository) {
 
             storeStockRepository.SaveStoreStockQuantities (store.StoreStock);
@@ -72,10 +77,14 @@ namespace Project0.Business {
 
             double orderTotal = 0.0;
 
-            foreach (var line in mOrderLines) {
+            var zipped = mOrderLines.Zip (mProducts);
 
-                Console.WriteLine ($"\t{line}");
-                orderTotal += line.Product.Price * line.ProductQuantity;
+            foreach (var (line, product) in zipped) {
+
+                double totalPrice = product.Price * line.ProductQuantity;
+                orderTotal += totalPrice;
+
+                Console.WriteLine ($"\t{product.Name} (${product.Price:0.00}) x {line.ProductQuantity}: ${totalPrice:0.00}");
             }
 
             Console.WriteLine ($"\n\tTotal: ${orderTotal:0.00}\n");

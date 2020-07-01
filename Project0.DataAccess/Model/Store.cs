@@ -24,7 +24,7 @@ namespace Project0.DataAccess.Model
 
         public void ShowProductStock () {
 
-            Console.WriteLine ($"Products for {Name}:");
+            Console.WriteLine ($"\nProducts for {Name}:\n");
 
             foreach (var stock in StoreStock) {
                 Console.WriteLine ($"\t{stock}");

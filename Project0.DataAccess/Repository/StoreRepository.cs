@@ -30,7 +30,10 @@ namespace Project0.DataAccess.Repository {
         public virtual Store FindById (int id) {
 
             using var context = new Project0Context (mOptions);
-            return context.Store.Where (s => s.Id == id).FirstOrDefault ();
+
+            return context.Store.Where (s => s.Id == id)
+                .Include (s => s.StoreStock).ThenInclude (s => s.Product)
+                .Include (s => s.CustomerOrder).FirstOrDefault ();
         }
 
         public virtual Store FindByName (string name) {
@@ -38,7 +41,8 @@ namespace Project0.DataAccess.Repository {
             using var context = new Project0Context (mOptions);
 
             return context.Store.Where (s => s.Name == name)
-                .Include (s => s.StoreStock).Include (s => s.CustomerOrder).FirstOrDefault ();
+                .Include (s => s.StoreStock).ThenInclude (s => s.Product)
+                .Include (s => s.CustomerOrder).FirstOrDefault ();
         }
     }
 }

@@ -287,6 +287,7 @@ namespace Project0.Main {
 
                         Console.Write ("How many: ");
                         bool gotQuantity = int.TryParse (Console.ReadLine ().Trim (), out quantity);
+                        Console.WriteLine("\n");
 
                         if (!gotQuantity) {
                             quantity = 0;
